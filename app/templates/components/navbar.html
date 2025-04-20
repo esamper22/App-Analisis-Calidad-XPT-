@@ -1,0 +1,20 @@
+{% block navbar %}
+<header>
+    <div class="container">
+        <div class="logo">
+            <span>Delphi</span>UIJ
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#hero" class="active">Inicio</a></li>
+                <li><a href="#features">Características</a></li>
+                <li><a href="#benefits">Beneficios</a></li>
+                <li><a href="#cta">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="{{ url_for('main.login_page') }}" class="login-btn">Ingresar</a>
+        </div>
+    </div>
+</header>
+{% endblock %}

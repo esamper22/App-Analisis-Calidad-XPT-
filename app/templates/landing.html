@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block title %}Bienvenido | Sistema Delphi UIJ{% endblock %}
+{% block content %}
+
+{% include 'components/navbar.html' %}
+
+<section class="hero" id="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="animate-title">Evaluación de Aplicaciones con Método Delphi</h1>
+            <p class="animate-subtitle">Optimiza el consenso entre expertos en tu institución.</p>
+            <div class="hero-buttons animate-buttons">
+                <a href="#" class="btn primary-btn">Ingresar al Sistema</a>
+                <a href="#" class="btn secondary-btn">Conocer Más</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="floating-element" id="element1"></div>
+            <div class="floating-element" id="element2"></div>
+            <div class="floating-element" id="element3"></div>
+            <div class="image-container">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDYwMCA1MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzY3NTRlMiIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNDJhNmZmIiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjUwIiByPSIyMDAiIGZpbGw9InVybCgjZ3JhZDEpIiBvcGFjaXR5PSIwLjgiIC8+CiAgPHBhdGggZD0iTTIwMCAxNTAgTDQwMCAxNTAgTDMwMCAzNTAgWiIgZmlsbD0id2hpdGUiIG9wYWNpdHk9IjAuNSIgLz4KICA8cGF0aCBkPSJNMTUwIDIwMCBMNDUwIDIwMCBMMzAwIDQwMCBaIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4zIiAvPgogIDxjaXJjbGUgY3g9IjMwMCIgY3k9IjE4MCIgcj0iNDAiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjYiIC8+Cjwvc3ZnPg=="
+                    alt="Método Delphi Ilustración">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <div class="container">
+        <h2 class="section-title">Características Principales</h2>
+        <div class="features-grid">
+            <div class="feature-card" data-delay="0">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="48" height="48">
+                        <path fill="currentColor"
+                            d="M12,3C17.5,3 22,6.58 22,11C22,15.42 17.5,19 12,19C10.76,19 9.57,18.82 8.47,18.5C5.55,21 2,21 2,21C4.33,18.67 4.7,17.1 4.75,16.5C3.05,15.07 2,13.13 2,11C2,6.58 6.5,3 12,3M17,12V10H15V12H17M13,12V10H11V12H13M9,12V10H7V12H9Z" />
+                    </svg>
+                </div>
+                <h3>Consenso Eficiente</h3>
+                <p>Facilita la toma de decisiones entre expertos mediante un proceso estructurado y transparente.</p>
+            </div>
+            <div class="feature-card" data-delay="200">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="48" height="48">
+                        <path fill="currentColor"
+                            d="M17.8,20C17.4,21.2 16.3,22 15,22H5C3.3,22 2,20.7 2,19V18H5L14.2,18C14.6,19.2 15.7,20 17,20H17.8M19,2C20.7,2 22,3.3 22,5V6H20V5C20,4.4 19.6,4 19,4C18.4,4 18,4.4 18,5V18H17C16.4,18 16,17.6 16,17V16H5V5C5,3.3 6.3,2 8,2H19M8,6V8H15V6H8M8,10V12H14V10H8Z" />
+                    </svg>
+                </div>
+                <h3>Análisis Detallado</h3>
+                <p>Genera informes completos con estadísticas y visualizaciones para una mejor comprensión de
+                    resultados.</p>
+            </div>
+            <div class="feature-card" data-delay="400">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="48" height="48">
+                        <path fill="currentColor"
+                            d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z" />
+                    </svg>
+                </div>
+                <h3>Colaboración Segura</h3>
+                <p>Permite a los expertos colaborar de forma anónima, eliminando sesgos y presiones sociales.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="benefits" id="benefits">
+    <div class="container">
+        <div class="benefits-content">
+            <h2 class="section-title">Beneficios del Método Delphi</h2>
+            <ul class="benefits-list">
+                <li>
+                    <span class="check-icon">✓</span>
+                    <span>Mejora la calidad de las decisiones institucionales</span>
+                </li>
+                <li>
+                    <span class="check-icon">✓</span>
+                    <span>Reduce el tiempo necesario para alcanzar consensos</span>
+                </li>
+                <li>
+                    <span class="check-icon">✓</span>
+                    <span>Elimina la influencia de personalidades dominantes</span>
+                </li>
+                <li>
+                    <span class="check-icon">✓</span>
+                    <span>Facilita la participación de expertos geográficamente dispersos</span>
+                </li>
+                <li>
+                    <span class="check-icon">✓</span>
+                    <span>Proporciona un registro histórico de las evaluaciones</span>
+                </li>
+            </ul>
+            <a href="#" class="btn primary-btn">Solicitar Demostración</a>
+        </div>
+        <div class="benefits-image">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQyYTZmZiIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNjc1NGUyIiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3QgeD0iNTAiIHk9IjUwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgcng9IjIwIiByeT0iMjAiIGZpbGw9InVybCgjZ3JhZDIpIiBvcGFjaXR5PSIwLjgiIC8+CiAgPGNpcmNsZSBjeD0iMTUwIiBjeT0iMTUwIiByPSI1MCIgZmlsbD0id2hpdGUiIG9wYWNpdHk9IjAuMyIgLz4KICA8Y2lyY2xlIGN4PSIzNTAiIGN5PSIyNTAiIHI9IjcwIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4zIiAvPgogIDxjaXJjbGUgY3g9IjI1MCIgY3k9IjIwMCIgcj0iMTAwIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4yIiAvPgogIDxwYXRoIGQ9Ik0xMDAgMzAwIEw0MDAgMzAwIEwyNTAgMTUwIFoiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjIiIC8+Cjwvc3ZnPg=="
+                alt="Beneficios del Método Delphi">
+        </div>
+    </div>
+</section>
+
+<section class="cta" id="cta">
+    <div class="container">
+        <h2>¿Listo para optimizar el consenso en tu institución?</h2>
+        <p>Únete a las instituciones que ya están mejorando sus procesos de toma de decisiones.</p>
+        <div class="cta-buttons">
+            <a href="#" class="btn primary-btn">Comenzar Ahora</a>
+            <a href="#" class="btn outline-btn">Contactar Soporte</a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span>Delphi</span>UIJ
+                <p>Sistema de evaluación basado en el método Delphi para instituciones.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Plataforma</h4>
+                    <ul>
+                        <li><a href="#">Características</a></li>
+                        <li><a href="#">Beneficios</a></li>
+                        <li><a href="#">Testimonios</a></li>
+                        <li><a href="#">Precios</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Recursos</h4>
+                    <ul>
+                        <li><a href="#">Documentación</a></li>
+                        <li><a href="#">Tutoriales</a></li>
+                        <li><a href="#">Guías</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Contacto</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos de Servicio</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sistema Delphi UIJ. Todos los derechos reservados.</p>
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M22.46,6C21.69,6.35 20.86,6.58 20,6.69C20.88,6.16 21.56,5.32 21.88,4.31C21.05,4.81 20.13,5.16 19.16,5.36C18.37,4.5 17.26,4 16,4C13.65,4 11.73,5.92 11.73,8.29C11.73,8.63 11.77,8.96 11.84,9.27C8.28,9.09 5.11,7.38 3,4.79C2.63,5.42 2.42,6.16 2.42,6.94C2.42,8.43 3.17,9.75 4.33,10.5C3.62,10.5 2.96,10.3 2.38,10C2.38,10 2.38,10 2.38,10.03C2.38,12.11 3.86,13.85 5.82,14.24C5.46,14.34 5.08,14.39 4.69,14.39C4.42,14.39 4.15,14.36 3.89,14.31C4.43,16 6,17.26 7.89,17.29C6.43,18.45 4.58,19.13 2.56,19.13C2.22,19.13 1.88,19.11 1.54,19.07C3.44,20.29 5.7,21 8.12,21C16,21 20.33,14.46 20.33,8.79C20.33,8.6 20.33,8.42 20.32,8.23C21.16,7.63 21.88,6.87 22.46,6Z" />
+                    </svg>
+                </a>
+                <a href="#" class="social-link">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z" />
+                    </svg>
+                </a>
+                <a href="#" class="social-link">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
