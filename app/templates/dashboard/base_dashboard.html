@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Expert Method Analysis Dashboard
+{% endblock %}
+
+{% block customCSS %}
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand d-lg-block" href="#">
+            <span class="brand-text">Delphi Método</span>
+        </a>
+
+        <!-- Íconos derecha -->
+        <div class="d-flex ms-auto align-items-center">
+            <div class="position-relative nav-icon-container">
+                <i class="bi bi-bell nav-icon"></i>
+                <span class="notification-badge">3</span>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="d-flex align-items-center nav-profile" data-bs-toggle="offcanvas" data-bs-target="#offcanvas">
+                <span class="navbar-toggler-icon"></span>
+                <span class="ms-2 d-none d-md-inline nav-username">Menu</span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Offcanvas panel -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-header">
+        <div class="d-flex align-items-center">
+            <div class="brand-icon me-2">DM</div>
+            <h5 class="offcanvas-title" id="offcanvasLabel">Delphi Método</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+        <!-- Sección de usuario -->
+        <div class="user-profile-card">
+            <div class="d-flex align-items-center">
+                <div class="user-avatar">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <div class="ms-3">
+                    <div class="user-name">Nombre de Usuario</div>
+                    <small class="user-role">Administrador</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación interna -->
+        <div class="sidebar-heading mt-4 mb-2">MENÚ PRINCIPAL</div>
+        <ul class="nav nav-pills flex-column mb-4" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" href="#" onclick="changePage(1)">
+                    <i class="bi bi-house-door me-2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#" onclick="changePage(2)">
+                    <i class="bi bi-people me-2"></i>
+                    <span>Gestión de Usuarios</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#" onclick="changePage(3)">
+                    <i class="bi bi-app me-2"></i>
+                    <span>Aplicaciones</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#" onclick="changePage(4)">
+                    <i class="bi bi-gear me-2"></i>
+                    <span>Configuración</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#" onclick="changePage(5)">
+                    <i class="bi bi-graph-up me-2"></i>
+                    <span>Estadísticas</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-heading mt-2 mb-2">HERRAMIENTAS</div>
+        <ul class="nav nav-pills flex-column mb-auto" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    <span>Calendario</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-chat-dots me-2"></i>
+                    <span>Mensajes</span>
+                    <span class="badge rounded-pill ms-auto">5</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Cerrar sesión -->
+        <div class="mt-auto">
+            <hr class="sidebar-divider">
+            <a href="#" class="logout-button">
+                <i class="bi bi-box-arrow-right me-2"></i>
+                <span>Cerrar sesión</span>
+            </a>
+        </div>
+
+        <!-- Redes sociales -->
+        <div class="social-icons mt-4">
+            <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+        </div>
+    </div>
+</div>
+
+{% block adminD %}{% endblock %}
+{% endblock %}
+
+<!-- Bootstrap 5 JS Bundle with Popper -->
+{% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js"
+    integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+"
+    crossorigin="anonymous"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Custom JavaScript -->
+<script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
+{% endblock %}

@@ -1,21 +1,32 @@
 /* Base Styles */
 :root {
     --primary-color: #6754e2;
+    --primary-dark: #5344c4;
+    --primary-light: #8674e9;
     --secondary-color: #42a6ff;
+    --secondary-dark: #3590e0;
     --accent-color: #ff6b6b;
     --text-color: #333;
     --text-light: #666;
+    --text-muted: #888;
     --bg-color: #fff;
     --bg-light: #f8f9fa;
+    --bg-dark: #212529;
     --border-radius: 8px;
+    --border-radius-sm: 4px;
+    --border-radius-lg: 12px;
     --transition: all 0.3s ease;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.41);
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
+
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -287,7 +298,6 @@ nav ul li a.active::after {
     padding: 30px;
     box-shadow: var(--shadow);
     transition: var(--transition);
-    opacity: 0;
     transform: translateY(30px);
 }
 
@@ -309,6 +319,7 @@ nav ul li a.active::after {
 }
 
 .feature-card h3 {
+    color: #000;
     font-size: 1.5rem;
     margin-bottom: 15px;
 }

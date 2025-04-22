@@ -1,0 +1,974 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block adminD %}
+
+
+<!-- Contenido principal -->
+<div class="container-fluid py-4">
+    <!-- Paginación -->
+    <!-- <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="Navegación de páginas" class="d-flex justify-content-center">
+                <ul class="pagination">
+                    <li class="page-item" id="prev-page">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item active" data-page="1"><a class="page-link" href="#"
+                            onclick="changePage(1)">Dashboard</a></li>
+                    <li class="page-item" data-page="2"><a class="page-link" href="#"
+                            onclick="changePage(2)">Usuarios</a></li>
+                    <li class="page-item" data-page="3"><a class="page-link" href="#"
+                            onclick="changePage(3)">Aplicaciones</a></li>
+                    <li class="page-item" data-page="4"><a class="page-link" href="#"
+                            onclick="changePage(4)">Configuración</a></li>
+                    <li class="page-item" data-page="5"><a class="page-link" href="#"
+                            onclick="changePage(5)">Estadísticas</a></li>
+                    <li class="page-item" id="next-page">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div> -->
+
+    <!-- Secciones de contenido -->
+    <!-- 1. Dashboard -->
+    <div class="content-section active" id="page-1">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-speedometer2 me-2"></i>Dashboard</h2>
+                    <p class="text-muted">Resumen general del sistema</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-card-body">
+                        <div class="stat-card-icon bg-primary">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <div class="stat-card-title">Usuarios</div>
+                            <div class="stat-card-value">1,254</div>
+                            <div class="stat-card-change positive">
+                                <i class="bi bi-arrow-up"></i> 12.5%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-card-body">
+                        <div class="stat-card-icon bg-success">
+                            <i class="bi bi-app"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <div class="stat-card-title">Aplicaciones</div>
+                            <div class="stat-card-value">45</div>
+                            <div class="stat-card-change positive">
+                                <i class="bi bi-arrow-up"></i> 8.3%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-card-body">
+                        <div class="stat-card-icon bg-warning">
+                            <i class="bi bi-star"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <div class="stat-card-title">Evaluaciones</div>
+                            <div class="stat-card-value">876</div>
+                            <div class="stat-card-change positive">
+                                <i class="bi bi-arrow-up"></i> 5.2%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-card-body">
+                        <div class="stat-card-icon bg-danger">
+                            <i class="bi bi-activity"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <div class="stat-card-title">Actividad</div>
+                            <div class="stat-card-value">92%</div>
+                            <div class="stat-card-change negative">
+                                <i class="bi bi-arrow-down"></i> 2.1%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficas -->
+        <div class="row mb-4">
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Actividad de Usuarios</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="userActivityChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Distribución de Aplicaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="appDistributionChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actividad reciente -->
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Actividad Reciente</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Ver todo</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="d-flex">
+                                    <div class="activity-icon bg-primary">
+                                        <i class="bi bi-person-plus"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Nuevo usuario registrado</div>
+                                        <div class="text-muted small">Juan Pérez se unió al sistema</div>
+                                        <div class="text-muted small">Hace 2 horas</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex">
+                                    <div class="activity-icon bg-success">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Evaluación completada</div>
+                                        <div class="text-muted small">App "GestorPro" evaluada</div>
+                                        <div class="text-muted small">Hace 5 horas</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex">
+                                    <div class="activity-icon bg-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Aplicación actualizada</div>
+                                        <div class="text-muted small">Se actualizó "FinanzApp" a v2.1</div>
+                                        <div class="text-muted small">Hace 1 día</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex">
+                                    <div class="activity-icon bg-info">
+                                        <i class="bi bi-chat-dots"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Nuevo comentario</div>
+                                        <div class="text-muted small">María comentó en "DataViz"</div>
+                                        <div class="text-muted small">Hace 2 días</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Aplicaciones Mejor Valoradas</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Ver todas</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="app-icon bg-primary">
+                                            <i class="bi bi-graph-up"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">DataViz Pro</div>
+                                            <div class="text-muted small">Visualización de datos</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-rating">
+                                        <span class="badge bg-success">4.9</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="app-icon bg-info">
+                                            <i class="bi bi-wallet2"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">FinanzApp</div>
+                                            <div class="text-muted small">Gestión financiera</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-rating">
+                                        <span class="badge bg-success">4.8</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="app-icon bg-warning">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">TaskMaster</div>
+                                            <div class="text-muted small">Gestión de tareas</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-rating">
+                                        <span class="badge bg-success">4.7</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="app-icon bg-danger">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">SecurePass</div>
+                                            <div class="text-muted small">Gestor de contraseñas</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-rating">
+                                        <span class="badge bg-success">4.6</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Gestión de Usuarios -->
+    <div class="content-section" id="page-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-people me-2"></i>Gestión de Usuarios</h2>
+                    <p class="text-muted">Administra los usuarios del sistema</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Usuarios</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="bi bi-person-plus me-1"></i> Nuevo Usuario
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Rol</th>
+                                        <th scope="col">Estado</th>
+                                        <th scope="col">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>Juan Pérez</td>
+                                        <td>juan.perez@ejemplo.com</td>
+                                        <td>Administrador</td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>María López</td>
+                                        <td>maria.lopez@ejemplo.com</td>
+                                        <td>Evaluador</td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">3</th>
+                                        <td>Carlos Rodríguez</td>
+                                        <td>carlos.rodriguez@ejemplo.com</td>
+                                        <td>Usuario</td>
+                                        <td><span class="badge bg-warning">Pendiente</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">4</th>
+                                        <td>Ana Martínez</td>
+                                        <td>ana.martinez@ejemplo.com</td>
+                                        <td>Evaluador</td>
+                                        <td><span class="badge bg-danger">Inactivo</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">5</th>
+                                        <td>Roberto Sánchez</td>
+                                        <td>roberto.sanchez@ejemplo.com</td>
+                                        <td>Usuario</td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <nav aria-label="Paginación de usuarios">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Aplicaciones -->
+    <div class="content-section" id="page-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-app me-2"></i>Aplicaciones</h2>
+                    <p class="text-muted">Gestiona las aplicaciones a evaluar</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Aplicaciones</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAppModal">
+                            <i class="bi bi-plus-circle me-1"></i> Nueva Aplicación
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="app-card">
+                                    <div class="app-card-header">
+                                        <div class="app-icon bg-primary">
+                                            <i class="bi bi-graph-up"></i>
+                                        </div>
+                                        <div class="app-actions dropdown">
+                                            <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="#"><i
+                                                            class="bi bi-pencil me-2"></i>Editar</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>Ver
+                                                        detalles</a></li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i
+                                                            class="bi bi-trash me-2"></i>Eliminar</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="app-card-body">
+                                        <h5 class="app-name">DataViz Pro</h5>
+                                        <p class="app-description">Aplicación de visualización de datos con análisis
+                                            avanzado y reportes personalizados.</p>
+                                        <div class="app-meta">
+                                            <span class="app-category"><i class="bi bi-tag me-1"></i>Análisis</span>
+                                            <span class="app-version"><i class="bi bi-code-slash me-1"></i>v2.5</span>
+                                        </div>
+                                        <div class="app-rating mt-2">
+                                            <div class="stars">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-half"></i>
+                                            </div>
+                                            <span class="rating-value">4.9</span>
+                                        </div>
+                                    </div>
+                                    <div class="app-card-footer">
+                                        <button class="btn btn-sm btn-primary w-100">Evaluar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="app-card">
+                                    <div class="app-card-header">
+                                        <div class="app-icon bg-info">
+                                            <i class="bi bi-wallet2"></i>
+                                        </div>
+                                        <div class="app-actions dropdown">
+                                            <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="#"><i
+                                                            class="bi bi-pencil me-2"></i>Editar</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>Ver
+                                                        detalles</a></li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i
+                                                            class="bi bi-trash me-2"></i>Eliminar</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="app-card-body">
+                                        <h5 class="app-name">FinanzApp</h5>
+                                        <p class="app-description">Gestión financiera personal con seguimiento de gastos
+                                            y planificación de presupuesto.</p>
+                                        <div class="app-meta">
+                                            <span class="app-category"><i class="bi bi-tag me-1"></i>Finanzas</span>
+                                            <span class="app-version"><i class="bi bi-code-slash me-1"></i>v2.1</span>
+                                        </div>
+                                        <div class="app-rating mt-2">
+                                            <div class="stars">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star"></i>
+                                            </div>
+                                            <span class="rating-value">4.8</span>
+                                        </div>
+                                    </div>
+                                    <div class="app-card-footer">
+                                        <button class="btn btn-sm btn-primary w-100">Evaluar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="app-card">
+                                    <div class="app-card-header">
+                                        <div class="app-icon bg-warning">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </div>
+                                        <div class="app-actions dropdown">
+                                            <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="#"><i
+                                                            class="bi bi-pencil me-2"></i>Editar</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>Ver
+                                                        detalles</a></li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i
+                                                            class="bi bi-trash me-2"></i>Eliminar</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="app-card-body">
+                                        <h5 class="app-name">TaskMaster</h5>
+                                        <p class="app-description">Gestión de tareas y proyectos con seguimiento de
+                                            tiempo y colaboración en equipo.</p>
+                                        <div class="app-meta">
+                                            <span class="app-category"><i
+                                                    class="bi bi-tag me-1"></i>Productividad</span>
+                                            <span class="app-version"><i class="bi bi-code-slash me-1"></i>v3.2</span>
+                                        </div>
+                                        <div class="app-rating mt-2">
+                                            <div class="stars">
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star-fill"></i>
+                                                <i class="bi bi-star"></i>
+                                            </div>
+                                            <span class="rating-value">4.7</span>
+                                        </div>
+                                    </div>
+                                    <div class="app-card-footer">
+                                        <button class="btn btn-sm btn-primary w-100">Evaluar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <nav aria-label="Paginación de aplicaciones">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Configuración -->
+    <div class="content-section" id="page-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-gear me-2"></i>Configuración</h2>
+                    <p class="text-muted">Administra la configuración de tu cuenta</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Perfil de Usuario</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="profile-avatar mx-auto">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <h5 class="mt-3 mb-0">Nombre de Usuario</h5>
+                            <p class="text-muted">Administrador</p>
+                            <button class="btn btn-sm btn-outline-primary">Cambiar foto</button>
+                        </div>
+                        <form>
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Nombre completo</label>
+                                <input type="text" class="form-control" id="fullName" value="Nombre de Usuario">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" id="email" value="usuario@ejemplo.com">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="phone" value="+34 123 456 789">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Seguridad</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label">Contraseña actual</label>
+                                <input type="password" class="form-control" id="currentPassword">
+                            </div>
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">Nueva contraseña</label>
+                                <input type="password" class="form-control" id="newPassword">
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
+                                <input type="password" class="form-control" id="confirmPassword">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Preferencias</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label d-block">Notificaciones</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                <label class="form-check-label" for="emailNotifications">Notificaciones por
+                                    email</label>
+                            </div>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                                <label class="form-check-label" for="pushNotifications">Notificaciones push</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Idioma</label>
+                            <select class="form-select">
+                                <option selected>Español</option>
+                                <option>English</option>
+                                <option>Français</option>
+                                <option>Deutsch</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Zona horaria</label>
+                            <select class="form-select">
+                                <option selected>(GMT+01:00) Madrid</option>
+                                <option>(GMT+00:00) London</option>
+                                <option>(GMT-05:00) New York</option>
+                                <option>(GMT-08:00) Los Angeles</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar preferencias</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Estadísticas -->
+    <div class="content-section" id="page-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-graph-up me-2"></i>Estadísticas</h2>
+                    <p class="text-muted">Análisis y métricas del sistema</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Evaluaciones por Mes</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="evaluationsChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Distribución de Usuarios</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="userDistributionChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Categorías de Aplicaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="appCategoriesChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Tendencia de Evaluaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="evaluationTrendChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Resumen de Métricas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Métrica</th>
+                                        <th scope="col">Último Mes</th>
+                                        <th scope="col">Este Mes</th>
+                                        <th scope="col">Variación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Usuarios Nuevos</td>
+                                        <td>124</td>
+                                        <td>156</td>
+                                        <td class="text-success">+25.8%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aplicaciones Evaluadas</td>
+                                        <td>45</td>
+                                        <td>52</td>
+                                        <td class="text-success">+15.6%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tiempo Promedio de Evaluación</td>
+                                        <td>3.2 días</td>
+                                        <td>2.8 días</td>
+                                        <td class="text-success">-12.5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Calificación Promedio</td>
+                                        <td>4.2</td>
+                                        <td>4.5</td>
+                                        <td class="text-success">+7.1%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Usuarios Activos</td>
+                                        <td>876</td>
+                                        <td>923</td>
+                                        <td class="text-success">+5.4%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales -->
+<!-- Modal Añadir Usuario -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Añadir Nuevo Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" id="userName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userEmail" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="userEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userRole" class="form-label">Rol</label>
+                        <select class="form-select" id="userRole" required>
+                            <option value="">Seleccionar rol</option>
+                            <option value="admin">Administrador</option>
+                            <option value="evaluator">Evaluador</option>
+                            <option value="user">Usuario</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userPassword" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="userPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userConfirmPassword" class="form-label">Confirmar contraseña</label>
+                        <input type="password" class="form-control" id="userConfirmPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Usuario -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="editUserName" class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" id="editUserName" value="Juan Pérez" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserEmail" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="editUserEmail" value="juan.perez@ejemplo.com"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserRole" class="form-label">Rol</label>
+                        <select class="form-select" id="editUserRole" required>
+                            <option value="admin" selected>Administrador</option>
+                            <option value="evaluator">Evaluador</option>
+                            <option value="user">Usuario</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserStatus" class="form-label">Estado</label>
+                        <select class="form-select" id="editUserStatus" required>
+                            <option value="active" selected>Activo</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="inactive">Inactivo</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Añadir Aplicación -->
+<div class="modal fade" id="addAppModal" tabindex="-1" aria-labelledby="addAppModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAppModalLabel">Añadir Nueva Aplicación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="appName" class="form-label">Nombre de la aplicación</label>
+                        <input type="text" class="form-control" id="appName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="appDescription" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="appDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="appCategory" class="form-label">Categoría</label>
+                        <select class="form-select" id="appCategory" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="analytics">Análisis</option>
+                            <option value="finance">Finanzas</option>
+                            <option value="productivity">Productividad</option>
+                            <option value="security">Seguridad</option>
+                            <option value="other">Otra</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="appVersion" class="form-label">Versión</label>
+                        <input type="text" class="form-control" id="appVersion" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="appIcon" class="form-label">Icono</label>
+                        <select class="form-select" id="appIcon" required>
+                            <option value="graph-up">Gráfico</option>
+                            <option value="wallet2">Billetera</option>
+                            <option value="calendar-check">Calendario</option>
+                            <option value="shield-check">Seguridad</option>
+                            <option value="chat-dots">Chat</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

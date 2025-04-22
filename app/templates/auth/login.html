@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block head_extra %}
+{% block customCSS %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login-styles.css') }}">
 {% endblock  %}
 
@@ -23,7 +23,7 @@
                 <p>Ingresa tus credenciales para acceder al sistema</p>
             </div>
             
-            <form id="loginForm" class="login-form">
+            <form id="loginForm" class="login-form" action="">
                 <div class="form-group">
                     <label for="username">Usuario</label>
                     <div class="input-container">
@@ -54,7 +54,7 @@
                         <input type="checkbox" id="remember" name="remember">
                         <label for="remember">Recordarme</label>
                     </div>
-                    <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                    <a href="{{ url_for('admin.dashboard') }}" class="forgot-password">¿Olvidaste tu contraseña?</a>
                 </div>
                 
                 <button type="submit" class="login-button">
@@ -82,6 +82,6 @@
 
 {% endblock  %}
 
-{% block scripts %}
+{% block customJS %}
     <script src="{{ url_for('static', filename='js/login-script.js') }}"></script>
 {% endblock  %}
