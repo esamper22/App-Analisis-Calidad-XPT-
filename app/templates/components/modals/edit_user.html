@@ -1,0 +1,44 @@
+<!-- Modal Editar Usuario -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="editUserName" class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" id="editUserName" value="Juan Pérez" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserEmail" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="editUserEmail" value="juan.perez@ejemplo.com"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserRole" class="form-label">Rol</label>
+                        <select class="form-select" id="editUserRole" required>
+                            <option value="admin" selected>Administrador</option>
+                            <option value="evaluator">Evaluador</option>
+                            <option value="user">Usuario</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserStatus" class="form-label">Estado</label>
+                        <select class="form-select" id="editUserStatus" required>
+                            <option value="active" selected>Activo</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="inactive">Inactivo</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
