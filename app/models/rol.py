@@ -6,6 +6,7 @@ from enum import Enum
 class Rol(str, Enum):
     USUARIO = "usuario"
     ADMIN = "admin"
+    SUPERADMIN = 'superadmin'
     EVALUADOR = "evaluador"
     DESARROLLADOR = "desarrollador"
     INVITADO = "invitado"

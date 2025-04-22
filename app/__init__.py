@@ -17,4 +17,13 @@ def crear_app():
     from .utils.context import crear_contexto
     crear_contexto(app)
     
+    from .utils.admin_utils import verificar_admin
+    if not verificar_admin(app):
+        print("""
+        ⚠️  Advertencia: No hay administradores registrados.
+        Para registrar ejecuta este comando:
+        
+        flask crear-superadmin --username=<nombre> --email=<tu@email.com>
+        """)
+    
     return app
