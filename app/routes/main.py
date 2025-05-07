@@ -10,6 +10,7 @@ from app.forms.auth.login import LoginForm
 from app.utils.email import send_reset_email
 from app.forms.auth.reset import ResetPasswordForm
 from app.extension import db
+from app.utils.validate_url import is_safe_url
 
 main_bp = Blueprint('main', __name__)
 
@@ -42,7 +43,10 @@ def login_page():
 
                 # Respuesta para AJAX
                 if is_ajax:
-                    return jsonify(success=True, next_url=next_url)
+                    if next_url and is_safe_url(next_url):
+                        return jsonify(success=True, next_url=next_url)
+                    return redirect(url_for('admin.dashboard'))
+                    
 
                 # Respuesta normal
                 return redirect(next_url)
@@ -109,7 +113,6 @@ def reset_password(token):
         flash('Tu contraseña ha sido actualizada.', 'success')
         return redirect(url_for('main.login_page'))
     return render_template('auth/reset_password.html', form=form)
-
 
 @main_bp.route('/logout', methods=['GET', 'POST'])
 @login_required
