@@ -1,6 +1,42 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title></title>
-        <li
-</html>
+<form id="loginForm" class="login-form" action="">
+    <div class="form-group">
+        <label for="username">Usuario</label>
+        <div class="input-container">
+            <svg class="input-icon" viewBox="0 0 24 24" width="24" height="24">
+                <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+            </svg>
+            <input type="text" id="username" name="username" placeholder="Ingresa tu nombre de usuario" required>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="input-container">
+            <svg class="input-icon" viewBox="0 0 24 24" width="24" height="24">
+                <path fill="currentColor" d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+            </svg>
+            <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+            <button type="button" id="togglePassword" class="toggle-password">
+                <svg class="eye-icon" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <div class="form-options">
+        <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember">Recordarme</label>
+        </div>
+        <a href="" class="forgot-password">¿Olvidaste tu contraseña?</a>
+    </div>
+    
+
+    <button type="submit" class="login-button">
+        <span>Iniciar Sesión</span>
+        <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+        </svg>
+    </button>
+</form>

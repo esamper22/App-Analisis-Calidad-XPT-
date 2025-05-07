@@ -1,95 +1,154 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Toggle password visibility
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
-    
-    togglePassword.addEventListener('click', function() {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        // Change the eye icon
-        const eyeIcon = this.querySelector('.eye-icon');
-        if (type === 'text') {
-            eyeIcon.innerHTML = '<path fill="currentColor" d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z" />';
-        } else {
-            eyeIcon.innerHTML = '<path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" />';
-        }
+
+    // Path completos
+    const eyeOpenD =
+        'M12 4.5C7 4.5 2.73 7.61 1 12' +
+        'c1.73 4.39 6 7.5 11 7.5' +
+        's9.27-3.11 11-7.5' +
+        'C21.27 7.61 17 4.5 12 4.5z' +
+        'M12 17c-2.76 0-5-2.24-5-5' +
+        's2.24-5 5-5 5 2.24 5 5' +
+        's-2.24 5-5 5z' +
+        'M12 9c-1.66 0-3 1.34-3 3' +
+        's1.34 3 3 3 3-1.34 3-3' +
+        's-1.34-3-3-3z';
+
+    const eyeClosedD =
+        'M2.81 1.81L1.39 3.22l3.39 3.39' +
+        'C3.83 7.79 3.1 9.17 2.73 10.68' +
+        'l1.46 1.46c.09-.88.44-1.7 1.01-2.44' +
+        'L7.59 12.09c-.19.61-.29 1.24-.29 1.91' +
+        'c0 2.76 2.24 5 5 5' +
+        'c.93 0 1.8-.25 2.58-.68' +
+        'l3.49 3.49l1.41-1.41' +
+        'L2.81 1.81z' +
+        'M12 6.5c-2.76 0-5 2.24-5 5' +
+        'c0 .89.19 1.72.54 2.47' +
+        'l1.43-1.43c-.58-.7-.98-1.52-.98-2.47' +
+        'c0-2.76 2.24-5 5-5' +
+        'c1.93 0 3.58 1.1 4.44 2.74' +
+        'l1.46-1.46' +
+        'C15.72 6.69 13.97 6.5 12 6.5z';
+
+    togglePassword.addEventListener('click', function () {
+        // Cambia tipo
+        const isText = passwordInput.type === 'text';
+        passwordInput.type = isText ? 'password' : 'text';
+
+        // Cambia path
+        const path = this.querySelector('path');
+        path.setAttribute('d', isText ? eyeClosedD : eyeOpenD);
     });
-    
-    // Form submission
-    const loginForm = document.getElementById('loginForm');
-    
-    loginForm.addEventListener('submit', function(e) {
+
+    const form = document.getElementById('loginForm');
+    const loginButton = document.querySelector('.login-button');
+    let originalHTML = loginButton.innerHTML;
+
+    form.addEventListener('submit', async e => {
         e.preventDefault();
-        
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
-        // Add loading state to button
-        const loginButton = document.querySelector('.login-button');
-        const originalButtonText = loginButton.innerHTML;
+
+        // --- Animación de loader ---
         loginButton.innerHTML = '<div class="loader"></div>';
         loginButton.disabled = true;
-        
-        // Simulate API call
-        setTimeout(function() {
-            // Reset button state
-            loginButton.innerHTML = originalButtonText;
+
+        // --- Recoger todos los campos, incluido csrf_token ---
+        const formData = new FormData(form);
+
+        console.group('🚀 FormData entries');
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ':', pair[1]);
+        }
+        console.groupEnd();
+
+        try {
+            const resp = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            const data = await resp.json();
+
+            // Restaurar botón
             loginButton.disabled = false;
-            
-            // Here you would normally validate credentials with a server
-            // For demo purposes, we'll just show an alert
-            if (username && password) {
-                // Success animation
+
+            if (data.success) {
                 loginButton.classList.add('success');
                 loginButton.innerHTML = '<span>¡Bienvenido!</span>';
-                
-            } else {
-                // Show error
-                const inputs = document.querySelectorAll('input');
-                inputs.forEach(input => {
-                    if (!input.value) {
-                        input.style.borderColor = 'var(--accent-color)';
-                        setTimeout(() => {
-                            input.style.borderColor = '';
-                        }, 3000);
-                    }
-                });
+                return setTimeout(() => window.location = data.next_url, 800);
             }
-        }, 1500);
+
+            // Si falla validación
+            // showError(data.error || 'Credenciales inválidas.');
+            shakeEmptyInputs();
+            resetButton();
+
+        } catch (err) {
+            console.error('Fetch error:', err);
+            // showError('Error de conexión.');
+            resetButton();
+        }
     });
-    
+
+    function resetButton() {
+        loginButton.classList.remove('success');
+        loginButton.innerHTML = originalHTML;
+    }
+
+    function shakeEmptyInputs() {
+        form.querySelectorAll('input').forEach(input => {
+            if (!input.value.trim()) {
+                input.classList.add('input-error');
+                setTimeout(() => input.classList.remove('input-error'), 3000);
+            }
+        });
+    }
+
+    // function showError(msg) {
+    //     let div = form.querySelector('.login-error');
+    //     if (!div) {
+    //         div = document.createElement('div');
+    //         div.className = 'login-error text-danger';
+    //         form.prepend(div);
+    //     }
+    //     div.textContent = msg;
+    // }
+
     // Input focus effects
     const inputs = document.querySelectorAll('input');
-    
+
     inputs.forEach(input => {
-        input.addEventListener('focus', function() {
+        input.addEventListener('focus', function () {
             this.parentElement.style.transform = 'scale(1.02)';
         });
-        
-        input.addEventListener('blur', function() {
+
+        input.addEventListener('blur', function () {
             this.parentElement.style.transform = '';
         });
     });
-    
+
     // Floating elements parallax effect
-    document.addEventListener('mousemove', function(e) {
+    document.addEventListener('mousemove', function (e) {
         const moveX = (e.clientX - window.innerWidth / 2) / 50;
         const moveY = (e.clientY - window.innerHeight / 2) / 50;
-        
+
         if (document.getElementById('element1')) {
             document.getElementById('element1').style.transform = `translate(${moveX * -1}px, ${moveY * -1}px)`;
         }
-        
+
         if (document.getElementById('element2')) {
             document.getElementById('element2').style.transform = `translate(${moveX}px, ${moveY}px)`;
         }
-        
+
         if (document.getElementById('element3')) {
             document.getElementById('element3').style.transform = `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
         }
     });
-    
+
     // Add CSS for loader
     const style = document.createElement('style');
     style.textContent = `

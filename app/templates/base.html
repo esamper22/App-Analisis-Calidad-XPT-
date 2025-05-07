@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Sistema Delphi UIJ{% endblock %}</title>
+  <!-- Estilos generales -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/flash.css') }}">
   <!-- CSS común -->
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -13,7 +15,7 @@
   {% block customCSS %}{% endblock %}
 </head>
 <body>
-  {% include 'components/alerts.html' %}
+  {% include 'components/flash.html' %}
   
   <main>
     {% block content %}{% endblock %}
@@ -21,6 +23,7 @@
 
   {% block customJS %}
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/flash.js') }}"></script>
   {% endblock %}
 </body>
 </html>

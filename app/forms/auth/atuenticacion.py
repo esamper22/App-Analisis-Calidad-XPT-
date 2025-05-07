@@ -14,4 +14,4 @@ class LoginForm(FlaskForm):
         validators=[DataRequired(message="La contraseña es obligatoria")]
     )
     recordar = BooleanField('Recordarme')
-    submit = SubmitField('Iniciar Sesión')
+    enviar = SubmitField('Iniciar Sesión')
