@@ -49,20 +49,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     form.addEventListener('submit', async e => {
         e.preventDefault();
-
+    
         // --- Animación de loader ---
         loginButton.innerHTML = '<div class="loader"></div>';
         loginButton.disabled = true;
-
-        // --- Recoger todos los campos, incluido csrf_token ---
+    
         const formData = new FormData(form);
-
+    
         console.group('🚀 FormData entries');
         for (let pair of formData.entries()) {
             console.log(pair[0] + ':', pair[1]);
         }
         console.groupEnd();
-
+    
         try {
             const resp = await fetch(form.action, {
                 method: 'POST',
@@ -71,28 +70,51 @@ document.addEventListener('DOMContentLoaded', function () {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             });
+    
             const data = await resp.json();
-
-            // Restaurar botón
+    
             loginButton.disabled = false;
-
+    
             if (data.success) {
                 loginButton.classList.add('success');
                 loginButton.innerHTML = '<span>¡Bienvenido!</span>';
-                return setTimeout(() => window.location = data.next_url, 800);
+    
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login exitoso',
+                    text: 'Serás redirigido en un momento...',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+    
+                return setTimeout(() => window.location = data.next_url, 1500);
             }
-
-            // Si falla validación
-            // showError(data.error || 'Credenciales inválidas.');
+    
+            // ❌ Mostrar errores usando SweetAlert
+            if (data.errors && data.errors.length > 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de autenticación',
+                    html: data.errors.map(e => `<p>${e}</p>`).join(''),
+                    confirmButtonText: 'Entendido'
+                });
+            }
+    
             shakeEmptyInputs();
             resetButton();
-
+    
         } catch (err) {
             console.error('Fetch error:', err);
-            // showError('Error de conexión.');
             resetButton();
+    
+            Swal.fire({
+                icon: 'error',
+                title: 'Error del servidor',
+                text: 'Ocurrió un problema. Intenta más tarde.'
+            });
         }
-    });
+    });    
+    
 
     function resetButton() {
         loginButton.classList.remove('success');

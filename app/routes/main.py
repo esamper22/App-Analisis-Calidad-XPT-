@@ -13,43 +13,54 @@ main_bp = Blueprint('main', __name__)
 def index():
     return render_template('landing.html')
 
-
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login_page():
+    # 1) Si ya está autenticado, lo enviamos al dashboard
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
-    
+        return redirect(url_for('admin.dashboard'))
+
     form = LoginForm()
-    
-    if form.validate_on_submit():
-        user = Usuario.query.filter_by(nombre_usuario=form.usuario.data).first()
-        if user and check_password_hash(user.contraseña, form.clave.data):
-            login_user(user, remember=form.recordar.data)
-            next_url = request.args.get('next') or url_for('admin.dashboard')
+    # Recoger si es AJAX
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
-            # AJAX
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify(success=True, next_url=next_url)
+    # 2) Procesar POST
+    if request.method == 'POST':
+        # Validar campos CSRF + formatos
+        if form.validate_on_submit():
+            # Intentar autenticar
+            user = Usuario.query.filter_by(
+                nombre_usuario=form.usuario.data
+            ).first()
 
-            flash('Inicio de sesión exitoso.', 'success')
-            return redirect(next_url)
+            if user and check_password_hash(user.contraseña, form.clave.data):
+                login_user(user, remember=form.recordar.data)
+                next_url = request.args.get('next') or url_for('admin.dashboard')
+
+                # Respuesta para AJAX
+                if is_ajax:
+                    return jsonify(success=True, next_url=next_url)
+
+                # Respuesta normal
+                return redirect(next_url)
+
+            # Credenciales inválidas
+            errors = ['Usuario o contraseña incorrectos.']
         else:
-            flash('Usuario o contraseña incorrectos.', 'danger')
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify(success=False, error='Credenciales inválidas.')
+            # Errores de validación WTForms
+            errors = [ err for errs in form.errors.values() for err in errs ]
 
-    elif request.method == 'POST':
-        # Mostrar errores del formulario como mensajes flash
-        for field_errors in form.errors.values():
-            for err in field_errors:
-                flash(err, 'danger')
-        
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            first_err = next(iter(form.errors.values()))[0]
-            return jsonify(success=False, error=first_err)
+        # Si es AJAX devolvemos JSON con todos los errores
+        if is_ajax:
+            return jsonify(success=False, errors=errors)
 
-    return render_template('auth/login.html', login=form)
+        # Si no es AJAX, caemos al render_template más abajo, con form.errors
+        # (puedes mostrar inline con {{ form.usuario.errors }} etc.)
 
+    # 3) GET o POST inválido sin AJAX: renderizamos plantilla
+    return render_template(
+        'auth/login.html',
+        login=form
+    )
 
 @main_bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():

@@ -6,7 +6,6 @@
   <title>{% block title %}Sistema Delphi UIJ{% endblock %}</title>
   <!-- Estilos generales -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/flash.css') }}">
   <!-- CSS común -->
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -15,14 +14,13 @@
   {% block customCSS %}{% endblock %}
 </head>
 <body>
-  {% include 'components/flash.html' %}
   
   <main>
     {% block content %}{% endblock %}
   </main>
 
-  <script src="{{ url_for('static', filename='js/flash.js') }}"></script>
-  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   {% block customJS %}
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   {% endblock %}

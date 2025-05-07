@@ -12,7 +12,7 @@ function changePage(pageNumber) {
     document.querySelectorAll('.nav-pills .nav-link').forEach(link => {
         link.classList.remove('active');
     });
-    document.querySelectorAll('.nav-pills .nav-link')[pageNumber - 1].classList.add('active');
+    document.querySelectorAll('.nav-pills .nav-link')[pageNumber].classList.add('active');
     
     // Cerrar el offcanvas en móviles
     const offcanvas = document.getElementById('offcanvas');
