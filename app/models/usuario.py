@@ -1,4 +1,7 @@
 import datetime
+
+from flask import current_app
+from itsdangerous import URLSafeTimedSerializer
 from .rol import Rol
 from app.extension import db
 from flask_login import UserMixin
@@ -35,3 +38,16 @@ class Usuario(UserMixin, db.Model):
     # Método para verificar roles
     def tiene_rol(self, rol: Rol):
         return self.rol == rol
+    
+    def get_reset_token(self, expires_sec=3600):
+        s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+        return s.dumps({'user_id': self.id})
+
+    @staticmethod
+    def verify_reset_token(token, expires_sec=3600):
+        s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token, max_age=expires_sec)
+        except:
+            return None
+        return Usuario.query.get(data['user_id'])
