@@ -13,7 +13,7 @@ class ConfiguracionBase:
 
     # ¡Alias para Flask!
     SECRET_KEY = CLAVE_SECRETA
-
+    HOST = '0.0.0.0'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class ConfiguracionDesarrollo(ConfiguracionBase):
