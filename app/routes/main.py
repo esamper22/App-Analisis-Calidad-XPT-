@@ -8,9 +8,9 @@ from app.models.usuario import Usuario
 from app.forms.auth.forgot import ForgotPasswordForm
 from app.forms.auth.login import LoginForm
 from app.utils.email import send_reset_email
+from app.utils.validate_url import is_safe_url
 from app.forms.auth.reset import ResetPasswordForm
 from app.extension import db
-from app.utils.validate_url import is_safe_url
 
 main_bp = Blueprint('main', __name__)
 
