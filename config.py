@@ -10,7 +10,14 @@ class ConfiguracionBase:
     # tu token de acceso, etc.
     TOKEN_ACCESO = os.getenv('TOKEN_ACCESO')
     CLAVE_SECRETA = os.getenv('CLAVE_SECRETA', 'clave-secreta-por-defecto')
-
+    
+    # Alias para Email
+    MAIL_SERVER   = 'smtp.gmail.com'
+    MAIL_PORT     = 587
+    MAIL_USE_TLS  = True
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    
     # ¡Alias para Flask!
     SECRET_KEY = CLAVE_SECRETA
     HOST = '0.0.0.0'
