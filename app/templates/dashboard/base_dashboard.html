@@ -55,8 +55,18 @@ Expert Method Analysis Dashboard
                     <i class="bi bi-person-circle"></i>
                 </div>
                 <div class="ms-3">
-                    <div class="user-name">Nombre de Usuario</div>
-                    <small class="user-role">Administrador</small>
+                    <div class="user-name">{{ current_user.nombre_usuario }}</div>
+                    <small class="user-role">
+                        {% if current_user.rol.value == 'admin' %}
+                        Administrador
+                        {% elif current_user.rol.value == 'jefe departamento' %}
+                        Jefe Departamento
+                        {% elif current_user.rol.value == 'evaluador' %}
+                        Evaluador
+                        {% else %}
+                        {{ current_user.rol.value|capitalize }}
+                        {% endif %}
+                    </small>
                 </div>
             </div>
         </div>
@@ -65,41 +75,61 @@ Expert Method Analysis Dashboard
         <div class="sidebar-heading mt-4 mb-2">MENÚ PRINCIPAL</div>
         <ul class="nav nav-pills flex-column mb-4" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link" href="{{ url_for('main.index') }}">
+                <a class="nav-link" href="{{ url_for('main.index') }}" data-page="0">
                     <i class="bi bi-house-fill me-2"></i>
                     <span>Inicio</span>
                 </a>
             </li>
+
+            {% if current_user.rol.value in ['admin', 'jefe departamento'] %}
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" href="#" onclick="changePage(1)">
+                <a class="nav-link active" href="#" data-page="1" onclick="changePage(1)">
                     <i class="bi bi-speedometer2 me-2"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
+            {% endif %}
+
+            {% if current_user.rol.value == 'admin' %}
             <li class="nav-item" role="presentation">
-                <a class="nav-link" href="#" onclick="changePage(2)">
+                <a class="nav-link" href="#" data-page="2" onclick="changePage(2)">
                     <i class="bi bi-people me-2"></i>
                     <span>Gestión de Usuarios</span>
                 </a>
             </li>
+            {% endif %}
+
+            {% if current_user.rol.value == 'jefe departamento' %}
             <li class="nav-item" role="presentation">
-                <a class="nav-link" href="#" onclick="changePage(3)">
+                <a class="nav-link" href="#" data-page="3" onclick="changePage(3)">
+                    <i class="bi bi-card-list me-2"></i>
+                    <span>Encuestas</span>
+                </a>
+            </li>
+
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="#" data-page="3" onclick="changePage(4)">
                     <i class="bi bi-app me-2"></i>
                     <span>Aplicaciones</span>
                 </a>
             </li>
+            {% endif %}
+
             <li class="nav-item" role="presentation">
-                <a class="nav-link" href="#" onclick="changePage(4)">
+                <a class="nav-link" href="#" data-page="4" onclick="changePage(5)">
                     <i class="bi bi-gear me-2"></i>
                     <span>Configuración</span>
                 </a>
             </li>
+
+            {% if current_user.rol.value in ['admin', 'jefe departamento'] %}
             <li class="nav-item" role="presentation">
-                <a class="nav-link" href="#" onclick="changePage(5)">
+                <a class="nav-link" href="#" data-page="5" onclick="changePage(6)">
                     <i class="bi bi-graph-up me-2"></i>
                     <span>Estadísticas</span>
                 </a>
             </li>
+            {% endif %}
         </ul>
 
 
@@ -136,4 +166,7 @@ Expert Method Analysis Dashboard
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!-- Custom JavaScript -->
 <script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin/crear-usuario.js') }}" type="module"></script>
+<script src="{{ url_for('static', filename='js/admin/editar-eliminar-usuario.js') }}" type="module"></script>
+<script src="{{ url_for('static', filename='js/jefe_dep/encuestas.js') }}"></script>
 {% endblock %}

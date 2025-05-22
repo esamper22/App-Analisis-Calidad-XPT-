@@ -5,12 +5,13 @@ from app.models.rol import Rol
 from app.extension import db
 
 def register_commands(app):
-    @app.cli.command("crear-superadmin")
+    @app.cli.command("crear-admin")
     @click.option('--username', default='admin', help='Nombre del admin')
+    @click.option('--full-name', prompt='Nombre completo', required=True, help='Nombre completo del admin')
     @click.option('--email', prompt=True, required=True, help='Correo electrónico')
     @click.option('--password', prompt=True, hide_input=True, 
                 confirmation_prompt=True, help='Contraseña del admin')
-    def crear_superadmin(username, email, password):
+    def crear_admin(username, full_name, email, password):
         """Crea un usuario administrador inicial"""
         try:
             if Usuario.query.filter_by(nombre_usuario=username).first():
@@ -19,9 +20,10 @@ def register_commands(app):
 
             admin = Usuario(
                 nombre_usuario=username,
+                nombre_completo=full_name,
                 correo=email,
                 contraseña=generate_password_hash(password),
-                rol=Rol.SUPERADMIN.value
+                rol=Rol.ADMIN.value
             )
             
             db.session.add(admin)
@@ -37,7 +39,7 @@ def register_commands(app):
     def verificar_admin():
         """Verifica y obliga a crear admin si no existe"""
         try:
-            admin = Usuario.query.filter_by(rol=Rol.SUPERADMIN.value).first()
+            admin = Usuario.query.filter_by(rol=Rol.ADMIN.value).first()
             
             if admin:
                 click.secho(f"✅ Admin existente: {admin.nombre_usuario}", fg="green")
@@ -45,13 +47,11 @@ def register_commands(app):
             
             click.secho("🚨 No hay administradores registrados", fg="red")
             click.secho("Ejecuta el siguiente comando para crear uno:", fg="blue")
-            click.secho("flask crear-superadmin --username=<nombre> --email=<correo>", bold=True)
+            click.secho("flask crear-admin --username=<nombre> --full-name=<nombre completo> --email=<correo>", bold=True)
             click.secho("\nO para modo interactivo:", fg="blue")
-            click.secho("flask crear-superadmin", bold=True)
+            click.secho("flask crear-admin", bold=True)
             raise click.Abort()
             
         except Exception as e:
             click.secho(f"🔧 Error de configuración: {str(e)}", fg="red")
             raise click.Abort()
-
-   

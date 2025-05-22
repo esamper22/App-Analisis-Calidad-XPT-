@@ -20,9 +20,14 @@ def index():
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login_page():
+    enpoint_rol = {'admin': 'admin',
+                   'jefe departamento': 'jefe_dep',
+                   'evaluador': 'expert'
+                   }
+    
     # 1) Si ya está autenticado, lo enviamos al dashboard
     if current_user.is_authenticated:
-        return redirect(url_for('admin.dashboard'))
+        return redirect(url_for(f'{enpoint_rol[current_user.rol.value]}.dashboard'))
 
     form = LoginForm()
     # Recoger si es AJAX
@@ -39,13 +44,13 @@ def login_page():
 
             if user and check_password_hash(user.contraseña, form.clave.data):
                 login_user(user, remember=form.recordar.data)
-                next_url = request.args.get('next') or url_for('admin.dashboard')
+                next_url = request.args.get('next') or url_for(f'{enpoint_rol[user.rol.value]}.dashboard')
 
                 # Respuesta para AJAX
                 if is_ajax:
                     if next_url and is_safe_url(next_url):
                         return jsonify(success=True, next_url=next_url)
-                    return redirect(url_for('admin.dashboard'))
+                    return redirect(url_for(f'{enpoint_rol[user.rol.value]}.dashboard'))
                     
 
                 # Respuesta normal

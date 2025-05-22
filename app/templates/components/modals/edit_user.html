@@ -1,44 +1,46 @@
 <!-- Modal Editar Usuario -->
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="editUserName" class="form-label">Nombre completo</label>
-                        <input type="text" class="form-control" id="editUserName" value="Juan Pérez" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editUserEmail" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" id="editUserEmail" value="juan.perez@ejemplo.com"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editUserRole" class="form-label">Rol</label>
-                        <select class="form-select" id="editUserRole" required>
-                            <option value="admin" selected>Administrador</option>
-                            <option value="evaluator">Evaluador</option>
-                            <option value="user">Usuario</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editUserStatus" class="form-label">Estado</label>
-                        <select class="form-select" id="editUserStatus" required>
-                            <option value="active" selected>Activo</option>
-                            <option value="pending">Pendiente</option>
-                            <option value="inactive">Inactivo</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Guardar cambios</button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm" action="" method="POST" novalidate>
+          <input type="hidden" name="csrf_token" id="csrf_token_edit" value="{{ csrf_token() }}">
+          <input type="hidden" name="user_id" id="editUserId">
+
+          <div class="mb-3">
+            <label for="editUserFullName" class="form-label">Nombre completo</label>
+            <input type="text" class="form-control" id="editUserFullName" name="nombre_completo" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="editUserName" class="form-label">Nombre Usuario</label>
+            <input type="text" class="form-control" id="editUserName" name="nombre_usuario" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="editUserEmail" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="editUserEmail" name="correo" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="editUserRole" class="form-label">Rol</label>
+            <select class="form-select" id="editUserRole" name="rol" required>
+              <option value="">Seleccionar rol</option>
+              <option value="admin">Admin</option>
+              <option value="evaluador">Evaluador</option>
+              <option value="jefe departamento">Jefe Departamento</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="submitEditUserBtn">Actualizar</button>
+      </div>
     </div>
+  </div>
 </div>

@@ -4,6 +4,7 @@ from app.models.evaluacion import  *
 from app.models.ronda_evaluacion import  *
 from app.models.ronda_participantes import  *
 from app.models.usuario import  *
+from app.models.encuesta import  *
 
 def crear_contexto(app):
     

@@ -1,45 +1,73 @@
-<!-- Modales -->
-<!-- Modal Añadir Usuario -->
+<!-- Modal Añadir/Editar Usuario -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addUserModalLabel">Añadir Nuevo Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="userName" class="form-label">Nombre completo</label>
-                        <input type="text" class="form-control" id="userName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="userEmail" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" id="userEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="userRole" class="form-label">Rol</label>
-                        <select class="form-select" id="userRole" required>
-                            <option value="">Seleccionar rol</option>
-                            <option value="admin">Administrador</option>
-                            <option value="evaluator">Evaluador</option>
-                            <option value="user">Usuario</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="userPassword" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="userPassword" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="userConfirmPassword" class="form-label">Confirmar contraseña</label>
-                        <input type="password" class="form-control" id="userConfirmPassword" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Guardar</button>
-            </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="addUserForm" method="POST" novalidate>
+        {{ form_user.hidden_tag() }}
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserModalLabel">
+            {{ 'Editar Usuario' if edit_user else 'Añadir Nuevo Usuario' }}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            {{ form_user.nombre_completo.label(class="form-label") }}
+            {{ form_user.nombre_completo(class="form-control", id="userFullName") }}
+            {% for err in form_user.nombre_completo.errors %}
+              <div class="form-text text-danger">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form_user.nombre_usuario.label(class="form-label") }}
+            {{ form_user.nombre_usuario(class="form-control", id="userName") }}
+            {% for err in form_user.nombre_usuario.errors %}
+              <div class="form-text text-danger">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form_user.correo.label(class="form-label") }}
+            {{ form_user.correo(class="form-control", id="userEmail") }}
+            {% for err in form_user.correo.errors %}
+              <div class="form-text text-danger">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form_user.rol.label(class="form-label") }}
+            {{ form_user.rol(class="form-select", id="userRole") }}
+            {% for err in form_user.rol.errors %}
+              <div class="form-text text-danger">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div id="passwordFields">
+            <div class="mb-3">
+              {{ form_user.contraseña.label(class="form-label") }}
+              {{ form_user.contraseña(class="form-control", id="userPassword") }}
+              {% for err in form_user.contraseña.errors %}
+                <div class="form-text text-danger">{{ err }}</div>
+              {% endfor %}
+            </div>
+            <div class="mb-3">
+              {{ form_user.confirmar_contraseña.label(class="form-label") }}
+              {{ form_user.confirmar_contraseña(class="form-control", id="userConfirmPassword") }}
+              {% for err in form_user.confirmar_contraseña.errors %}
+                <div class="form-text text-danger">{{ err }}</div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="submitUserBtn">
+            {{ 'Actualizar' if edit_user else 'Guardar' }}
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>

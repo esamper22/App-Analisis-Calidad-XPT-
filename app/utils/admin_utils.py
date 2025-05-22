@@ -3,5 +3,5 @@ def verificar_admin(app):
         from app.models.usuario import Usuario
         from app.models.rol import Rol
         
-        return Usuario.query.filter_by(rol=Rol.SUPERADMIN.value).first()
+        return Usuario.query.filter_by(rol=Rol.ADMIN.value).first()
             

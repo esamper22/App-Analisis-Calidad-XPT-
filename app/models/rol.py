@@ -4,9 +4,7 @@ from enum import Enum
 # Enumeración de Roles
 # ------------------------
 class Rol(str, Enum):
-    USUARIO = "usuario"
     ADMIN = "admin"
-    SUPERADMIN = 'superadmin'
+    JEFE_DEPARTAMENTO = 'jefe departamento'
     EVALUADOR = "evaluador"
-    DESARROLLADOR = "desarrollador"
-    INVITADO = "invitado"
+    

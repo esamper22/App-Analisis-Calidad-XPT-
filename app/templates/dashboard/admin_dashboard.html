@@ -270,102 +270,68 @@
                             <i class="bi bi-person-plus me-1"></i> Nuevo Usuario
                         </button>
                     </div>
+
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Rol</th>
-                                        <th scope="col">Estado</th>
-                                        <th scope="col">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Juan Pérez</td>
-                                        <td>juan.perez@ejemplo.com</td>
-                                        <td>Administrador</td>
-                                        <td><span class="badge bg-success">Activo</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
-                                                data-bs-target="#editUserModal">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>María López</td>
-                                        <td>maria.lopez@ejemplo.com</td>
-                                        <td>Evaluador</td>
-                                        <td><span class="badge bg-success">Activo</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
-                                                data-bs-target="#editUserModal">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Carlos Rodríguez</td>
-                                        <td>carlos.rodriguez@ejemplo.com</td>
-                                        <td>Usuario</td>
-                                        <td><span class="badge bg-warning">Pendiente</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
-                                                data-bs-target="#editUserModal">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>Ana Martínez</td>
-                                        <td>ana.martinez@ejemplo.com</td>
-                                        <td>Evaluador</td>
-                                        <td><span class="badge bg-danger">Inactivo</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
-                                                data-bs-target="#editUserModal">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">5</th>
-                                        <td>Roberto Sánchez</td>
-                                        <td>roberto.sanchez@ejemplo.com</td>
-                                        <td>Usuario</td>
-                                        <td><span class="badge bg-success">Activo</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
-                                                data-bs-target="#editUserModal">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <!-- Envuélvelo en un contenedor con scroll si supera cierto ancho -->
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-hover mb-0" id="usersTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Usuario</th> <!-- Nueva columna -->
+                                            <th scope="col">Nombre</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Rol</th>
+                                            <th scope="col">Estado</th>
+                                            <th scope="col">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% set total_usuarios = users | selectattr('id', 'ne', current_user.id) | list
+                                        %}
+                                        {% if total_usuarios %}
+                                        {% for user in total_usuarios %}
+                                        <tr data-user-id="{{ user.id }}">
+                                            <th scope="row">{{ loop.index }}</th>
+                                            <td>{{ user.nombre_usuario }}</td>
+                                            <td>{{ user.nombre_completo }}</td>
+                                            <td>{{ user.correo }}</td>
+                                            <td>{{ user.rol.name | capitalize }}</td>
+                                            <td>
+                                                {% if user.activo %}
+                                                <span class="badge bg-success">Activo</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">Inactivo</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <!-- Botones -->
+                                                <button type="button"
+                                                    class="btn btn-outline-primary btn-sm rounded-circle shadow-sm me-2 d-inline-flex align-items-center justify-content-center"
+                                                    style="width: 32px; height: 32px;" title="Editar"
+                                                    onclick="editarUsuario({{ user.id }})">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </button>
+                                                <button type="button"
+                                                    class="btn btn-outline-danger btn-sm rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center"
+                                                    style="width: 32px; height: 32px;" title="Eliminar"
+                                                    onclick="eliminarUsuario({{ user.id }})">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">No hay otros usuarios registrados.</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+
+                                </table>
+                            </div>
+
                         </div>
                     </div>
                     <div class="card-footer bg-white">
@@ -388,8 +354,92 @@
         </div>
     </div>
 
-    <!-- 3. Aplicaciones -->
+    <!-- 3. Gestión de Encuestas -->
     <div class="content-section" id="page-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-card-list me-2"></i>Gestión de Encuestas</h2>
+                    <p class="text-muted">Administra las encuestas de satisfacción del método Delphi</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Encuestas</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEncuestaModal">
+                            <i class="bi bi-plus-lg me-1"></i> Nueva Encuesta
+                        </button>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-hover mb-0" id="encuestasTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Pregunta</th>
+                                        <th scope="col">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="encuestasBody">
+                                    {% if encuestas %}
+                                    {% for encuesta in encuestas %}
+                                    <tr data-encuesta-id="{{ encuesta.id }}">
+                                        <th scope="row">{{ loop.index }}</th>
+                                        <td class="pregunta-text">{{ encuesta.pregunta }}</td>
+                                        <td>
+                                            <button type="button"
+                                                class="btn btn-outline-primary btn-sm rounded-circle shadow-sm me-2 btn-editar"
+                                                style="width: 32px; height: 32px;" title="Editar"
+                                                data-id="{{ encuesta.id }}" data-pregunta="{{ encuesta.pregunta | e }}">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-outline-danger btn-sm rounded-circle shadow-sm btn-eliminar"
+                                                style="width: 32px; height: 32px;" title="Eliminar"
+                                                data-id="{{ encuesta.id }}">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No hay encuestas registradas.</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white">
+                        <nav aria-label="Paginación de encuestas">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Aplicaciones -->
+    <div class="content-section" id="page-4">
         <div class="row">
             <div class="col-12">
                 <div class="section-title">
@@ -574,8 +624,8 @@
         </div>
     </div>
 
-    <!-- 4. Configuración -->
-    <div class="content-section" id="page-4">
+    <!-- 5. Configuración -->
+    <div class="content-section" id="page-5">
         <div class="row">
             <div class="col-12">
                 <div class="section-title">
@@ -586,6 +636,7 @@
         </div>
 
         <div class="row">
+            <!-- Perfil de Usuario -->
             <div class="col-lg-4 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">
@@ -596,28 +647,45 @@
                             <div class="profile-avatar mx-auto">
                                 <i class="bi bi-person-circle"></i>
                             </div>
-                            <h5 class="mt-3 mb-0">Nombre de Usuario</h5>
-                            <p class="text-muted">Administrador</p>
+                            <h5 class="mt-3 mb-0">{{ current_user.nombre_usuario }}</h5>
+                            <p class="text-muted">
+                                {% if current_user.rol.value == 'admin' %}
+                                Administrador
+                                {% elif current_user.rol.value == 'jefe departamento' %}
+                                Jefe Departamento
+                                {% elif current_user.rol.value == 'evaluador' %}
+                                Evaluador
+                                {% else %}
+                                {{ current_user.rol.value|capitalize }}
+                                {% endif %}
+                            </p>
                             <button class="btn btn-sm btn-outline-primary">Cambiar foto</button>
                         </div>
                         <form>
                             <div class="mb-3">
                                 <label for="fullName" class="form-label">Nombre completo</label>
-                                <input type="text" class="form-control" id="fullName" value="Nombre de Usuario">
+                                <input type="text" class="form-control" id="fullName"
+                                    value="{{ current_user.nombre_completo }}" readonly>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" id="email" value="usuario@ejemplo.com">
+                                <input type="email" class="form-control" id="email" value="{{ current_user.correo }}"
+                                    readonly>
                             </div>
+                            {% if current_user.rol.value != 'evaluador' %}
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="phone" value="+34 123 456 789">
+                                <input type="tel" class="form-control" id="phone"
+                                    value="{{ current_user.telefono or '' }}">
                             </div>
+                            {% endif %}
                             <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
                         </form>
                     </div>
                 </div>
             </div>
+
+            <!-- Seguridad -->
             <div class="col-lg-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-white">
@@ -641,6 +709,9 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Preferencias visibles solo para admin y jefe departamento -->
+                {% if current_user.rol.value in ['admin', 'jefe departamento'] %}
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-white">
                         <h5 class="card-title mb-0">Preferencias</h5>
@@ -658,33 +729,16 @@
                                 <label class="form-check-label" for="pushNotifications">Notificaciones push</label>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Idioma</label>
-                            <select class="form-select">
-                                <option selected>Español</option>
-                                <option>English</option>
-                                <option>Français</option>
-                                <option>Deutsch</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Zona horaria</label>
-                            <select class="form-select">
-                                <option selected>(GMT+01:00) Madrid</option>
-                                <option>(GMT+00:00) London</option>
-                                <option>(GMT-05:00) New York</option>
-                                <option>(GMT-08:00) Los Angeles</option>
-                            </select>
-                        </div>
                         <button type="submit" class="btn btn-primary">Guardar preferencias</button>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- 5. Estadísticas -->
-    <div class="content-section" id="page-5">
+    <!-- 6. Estadísticas -->
+    <div class="content-section" id="page-6">
         <div class="row">
             <div class="col-12">
                 <div class="section-title">
@@ -694,6 +748,30 @@
             </div>
         </div>
 
+        <!-- Notificaciones según rol -->
+        <div class="row mb-4">
+            <div class="col-12">
+                {% if current_user.rol.value == 'admin' %}
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-people-fill me-2"></i>
+                    <strong>Gestión de Usuarios:</strong> Tienes acceso completo para administrar usuarios.
+                </div>
+                {% elif current_user.rol.value == 'jefe departamento' %}
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-app-indicator me-2"></i>
+                    <strong>Notificación de Aplicaciones:</strong> Revisa las nuevas aplicaciones asignadas a tu
+                    departamento.
+                </div>
+                {% elif current_user.rol.value == 'evaluador' %}
+                <div class="alert alert-secondary" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Bienvenido evaluador, revisa tus evaluaciones pendientes.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Estadísticas principales -->
         <div class="row mb-4">
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm h-100">
@@ -705,6 +783,7 @@
                     </div>
                 </div>
             </div>
+            {% if current_user.rol.value =='admin' %}
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-header bg-white">
@@ -715,6 +794,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <div class="row mb-4">
@@ -796,10 +876,12 @@
             </div>
         </div>
     </div>
+
 </div>
 
 {% include 'components/modals/add_user.html' %}
 {% include 'components/modals/edit_user.html' %}
 {% include 'components/modals/add_app.html' %}
+{% include 'components/modals/crear-editar-encuestas.html' %}
 
 {% endblock %}

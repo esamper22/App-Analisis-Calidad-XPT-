@@ -1,34 +1,73 @@
 // Función para cambiar entre páginas
+// function changePage(pageNumber) {
+//     // Ocultar todas las secciones
+//     document.querySelectorAll('.content-section').forEach(section => {
+//         section.classList.remove('active');
+//     });
+
+//     // Mostrar la sección seleccionada
+//     const page = document.getElementById('page-' + pageNumber);
+//     if (page) {
+//         page.classList.add('active');
+//     } else {
+//         console.warn(`No existe la sección con id page-${pageNumber}`);
+//     }
+
+//     // Actualizar el menú lateral usando data-page
+//     document.querySelectorAll('.nav-pills .nav-link').forEach(link => {
+//         link.classList.remove('active');
+//         if (link.dataset.page === String(pageNumber)) {
+//             link.classList.add('active');
+//         }
+//     });
+
+//     // Cerrar el offcanvas en móviles
+//     const offcanvas = document.getElementById('offcanvas');
+//     const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvas);
+//     if (bsOffcanvas && window.innerWidth < 992) {
+//         bsOffcanvas.hide();
+//     }
+// }
+
 function changePage(pageNumber) {
-    // Ocultar todas las secciones
-    document.querySelectorAll('.content-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
-    // Mostrar la sección seleccionada
-    document.getElementById('page-' + pageNumber).classList.add('active');
-    
-    // Actualizar el menú lateral
-    document.querySelectorAll('.nav-pills .nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
-    document.querySelectorAll('.nav-pills .nav-link')[pageNumber].classList.add('active');
-    
-    // Cerrar el offcanvas en móviles
-    const offcanvas = document.getElementById('offcanvas');
-    const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvas);
-    if (bsOffcanvas && window.innerWidth < 992) {
-        bsOffcanvas.hide();
-    }
+    // 1) Secciones
+    document.querySelectorAll('.content-section').forEach(sec =>
+        sec.classList.toggle('active', sec.id === 'page-' + pageNumber)
+    );
+
+    // 2) Nav activo
+    document.querySelectorAll('#sideMenu .nav-link').forEach(link =>
+        link.classList.toggle('active', link.dataset.page === String(pageNumber))
+    );
+
+    // 3) Cerrar offcanvas en móviles
+    const offcanvasEl = document.getElementById('offcanvas');
+    const bsOff = bootstrap.Offcanvas.getInstance(offcanvasEl);
+    if (bsOff && window.innerWidth < 992) bsOff.hide();
 }
 
+
 // Inicializar gráficos cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize Bootstrap's Offcanvas (if not already initialized)
-    const offcanvasElementList = [].slice.call(document.querySelectorAll('.offcanvas'))
-    const offcanvasList = offcanvasElementList.map(function (offcanvasEl) {
-      return new bootstrap.Offcanvas(offcanvasEl)
-    })
+    // const offcanvasElementList = [].slice.call(document.querySelectorAll('.offcanvas'))
+    // const offcanvasList = offcanvasElementList.map(function (offcanvasEl) {
+    //   return new bootstrap.Offcanvas(offcanvasEl)
+    // })
+
+    // 1) Quitar todos los onclick inline
+    // 2) Agregar un único listener que lea data-page
+    document.querySelectorAll('#sideMenu .nav-link').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            // Si es un enlace real (Inicio), dejamos la navegación normal
+            if (link.href && !link.href.endsWith('#')) {
+                return window.location = link.href;
+            }
+            const pageNumber = link.dataset.page;
+            changePage(pageNumber);
+        });
+    });
 
     // Gráfico de actividad de usuarios
     const userActivityCtx = document.getElementById('userActivityChart');
