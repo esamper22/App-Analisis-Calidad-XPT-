@@ -5,6 +5,7 @@ from flask_login import login_required
 from app.extension import db
 from app.models.usuario import Usuario
 from app.forms.create_user import UsuarioForm
+from app.decorators.jefe_dep import jefe_required
 
 jefe_dep_bp = Blueprint('jefe_dep', __name__, url_prefix='/jefe_dep')
 
@@ -23,6 +24,7 @@ def get_all_encuestas():
 
 @jefe_dep_bp.route('/encuestas', methods=['POST'])
 @login_required
+@jefe_required
 def crear_encuesta():
     """
     Crea una nueva encuesta con la pregunta proporcionada.
@@ -50,6 +52,7 @@ def crear_encuesta():
 
 @jefe_dep_bp.route('/dashboard')
 @login_required
+@jefe_required
 def dashboard():
     users = Usuario.query.all()
     encuestas = Encuesta.query.all()
@@ -61,6 +64,7 @@ def dashboard():
 
 @jefe_dep_bp.route('/encuestas/<int:id>', methods=['PUT'])
 @login_required
+@jefe_required
 def editar_encuesta(id):
     """
     Actualiza la pregunta de una encuesta existente.
@@ -89,6 +93,7 @@ def editar_encuesta(id):
 
 @jefe_dep_bp.route('/encuestas/<int:id>', methods=['DELETE'])
 @login_required
+@jefe_required
 def eliminar_encuesta(id):
     """
     Elimina una encuesta por ID.

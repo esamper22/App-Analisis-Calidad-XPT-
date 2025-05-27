@@ -11,6 +11,7 @@ import re
 from flask import current_app
 from app.forms.create_user import UsuarioForm, UsuarioEditForm
 from app.models.encuesta import Encuesta
+from app.decorators.admin import admin_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.\w+$")
@@ -21,6 +22,7 @@ def get_users():
 
 @admin_bp.route('/dashboard')
 @login_required
+@admin_required
 def dashboard():
     users = Usuario.query.all()
     encuestas = Encuesta.query.all()
@@ -31,6 +33,8 @@ def dashboard():
                            )
 
 @admin_bp.route('/listar-usuarios', methods=['GET'])
+@login_required
+@admin_required
 def listar_usuarios():
     try:
         # Traer todos los usuarios; si quieres excluir al actual, importa current_user y filtra aquí
@@ -46,6 +50,8 @@ def listar_usuarios():
         return jsonify({'error': 'Error interno al obtener usuarios'}), 500
 
 @admin_bp.route('/crear-usuario', methods=['POST'])
+@login_required
+@admin_required
 def registrar_usuario():
     form = UsuarioForm()
 
@@ -98,6 +104,8 @@ def registrar_usuario():
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 @admin_bp.route('/editar-usuario/<int:user_id>', methods=['PUT', 'PATCH'])
+@login_required
+@admin_required
 def editar_usuario(user_id):
     try:
         if not request.is_json:
@@ -167,6 +175,8 @@ def editar_usuario(user_id):
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 @admin_bp.route('/eliminar-usuario/<int:user_id>', methods=['DELETE'])
+@login_required
+@admin_required
 def eliminar_usuario(user_id):
     try:
         user = Usuario.query.get(user_id)
@@ -184,6 +194,8 @@ def eliminar_usuario(user_id):
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 @admin_bp.route('/obtener-usuario/<int:user_id>', methods=['GET'])
+@login_required
+@admin_required
 def obtener_usuario(user_id):
     try:
         user = Usuario.query.get(user_id)

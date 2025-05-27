@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from config import obtener_configuracion
 
 def crear_app():
@@ -26,4 +26,19 @@ def crear_app():
         flask crear-superadmin --username=<nombre> --email=<tu@email.com>
         """)
     
+    # Registro de manejadores de error
+    @app.errorhandler(403)
+    def error_403(error):
+        return render_template('error/403.html'), 403
+
+    @app.errorhandler(404)
+    def error_404(error):
+        return render_template('error/404.html'), 404
+
+    @app.errorhandler(500)
+    def error_500(error):
+        return render_template('error/500.html'), 500
+
+    # Puedes agregar más códigos de error si quieres
+
     return app

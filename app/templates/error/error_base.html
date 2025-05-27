@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Error - No hay administradores
+{% endblock  %}
+
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error_base.css') }}">
+{% endblock  %}
+
+{% block content %}
+<div class="container">
+    <div class="error-container" role="alert" aria-live="assertive">
+        <div class="error-icon" aria-hidden="true">⚠️</div>
+        {% block text %}
+        {% endblock  %}
+        <a href="/" class="btn-home" role="button">Volver al inicio</a>
+    </div>
+</div>
+{% endblock  %}

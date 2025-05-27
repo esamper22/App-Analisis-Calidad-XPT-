@@ -3,11 +3,13 @@ from flask_login import login_required, current_user
 from app.models.aplicacion import Aplicacion
 from app.models.evaluacion import ResultadoEvaluacion
 from app.extension import db
+from app.decorators.expert import expert_required
 
 expert_bp = Blueprint('expert', __name__, url_prefix='/expert')
 
 @expert_bp.route('/dashboard')
 @login_required
+@expert_required
 def dashboard():
     # Estadísticas generales para el evaluador
     stats = {
@@ -28,6 +30,7 @@ def aplicaciones():
 
 @expert_bp.route('/evaluar/<int:app_id>')
 @login_required
+@expert_required
 def evaluar(app_id):
     app = Aplicacion.query.get_or_404(app_id)
     # Lógica de presentación del formulario de evaluación
@@ -46,6 +49,7 @@ def evaluar(app_id):
 
 @expert_bp.route('/resultados')
 @login_required
+@expert_required
 def resultados_global():
     # Resultados agregados por aplicación
     results = db.session.query(
@@ -57,6 +61,7 @@ def resultados_global():
 
 @expert_bp.route('/resultados/<int:app_id>')
 @login_required
+@expert_required
 def resultados(app_id):
     app = Aplicacion.query.get_or_404(app_id)
     ResultadoEvaluacions = ResultadoEvaluacion.query.filter_by(Aplicacion_id=app_id).all()
@@ -64,6 +69,7 @@ def resultados(app_id):
 
 @expert_bp.route('/perfil', methods=['GET', 'POST'])
 @login_required
+@expert_required
 def perfil():
     if request.method == 'POST':
         username = request.form.get('username')
