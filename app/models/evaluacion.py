@@ -5,8 +5,8 @@ import datetime
 # ------------------------
 # Modelo de Parametro de Evaluación
 # ------------------------
-class ParametroEvaluacion(db.Model):
-    __tablename__ = 'parametros_evaluacion'
+class Encuesta(db.Model):
+    __tablename__ = 'encuesta'
 
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255), nullable=False)  # Nombre del parámetro
@@ -57,81 +57,111 @@ class ParametroEvaluacion(db.Model):
 
     @staticmethod
     def obtener_por_id(parametro_id):
-        return ParametroEvaluacion.query.get(parametro_id)
+        return Encuesta.query.get(parametro_id)
 
     @staticmethod
     def obtener_todos():
-        return ParametroEvaluacion.query.all()
+        return Encuesta.query.all()
 
     @staticmethod
     def obtener_por_nombre(nombre):
-        return ParametroEvaluacion.query.filter_by(nombre=nombre).first()
+        return Encuesta.query.filter_by(nombre=nombre).first()
 
     @staticmethod
     def obtener_por_fecha(fecha_inicio, fecha_fin):
-        return ParametroEvaluacion.query.filter(ParametroEvaluacion.fecha_creacion.between(fecha_inicio, fecha_fin)).all()
+        return Encuesta.query.filter(Encuesta.fecha_creacion.between(fecha_inicio, fecha_fin)).all()
+
 
 
 
 # ------------------------
-# Asociación entre Encuesta y ParametroEvaluacion
+# Modelo Evaluación (n-a-1 con Aplicación)
 # ------------------------
-class EncuestaParametro(db.Model):
-    __tablename__ = 'encuesta_parametro'
+class Evaluacion(db.Model):
+    __tablename__ = 'evaluaciones'
 
     id = db.Column(db.Integer, primary_key=True)
-    parametro_id = db.Column(db.Integer, db.ForeignKey('parametros_evaluacion.id'), nullable=False)
-    aplicacion_id = db.Column(db.Integer, db.ForeignKey('aplicaciones.id'), nullable=True)
-    # Estado de envio
-    estado = db.Column(db.String(50), nullable=True, default='pendiente')  # 'pendiente', 'enviado', 'recibido'
+    aplicacion_id = db.Column(db.Integer, db.ForeignKey('aplicaciones.id'), nullable=False)
+    estado = db.Column(db.String(50), nullable=False, default='pendiente')  # 'pendiente', 'en progreso', 'completada'
+    rondas = db.Column(db.Integer, nullable=False, default=3)  # Número de rondas de evaluación
+    fecha_creacion = db.Column(db.DateTime, default=db.func.current_timestamp())
+    fecha_inicio = db.Column(db.DateTime, nullable=False)
+    fecha_fin = db.Column(db.DateTime, nullable=False)
+    comentarios = db.Column(db.Text, nullable=True)
 
-    # Relaciones
-    parametro = db.relationship('ParametroEvaluacion', backref='encuesta_parametros')
-    aplicacion = db.relationship('Aplicacion', backref='encuesta_parametros')
+    # Relación n-a-1 con Aplicación
+    aplicacion = db.relationship('Aplicacion', backref='evaluaciones_rel')
 
-    def __init__(self, parametro_id, aplicacion_id=None, estado='pendiente'):
-        self.parametro_id = parametro_id
+    # Relaciones n-a-n (se definen abajo con secondary)
+    parametros = db.relationship(
+        'Encuesta',
+        secondary='evaluacion_parametro',  # tabla intermedia
+        backref='evaluaciones_parametros'
+    )
+    usuarios = db.relationship(
+        'Usuario',
+        secondary='evaluacion_usuario',  # otra tabla intermedia
+        backref='evaluaciones_usuarios'
+    )
+
+    def __init__(self, aplicacion_id, fecha_inicio, fecha_fin=None, estado='pendiente', comentarios=None, rondas=3):
         self.aplicacion_id = aplicacion_id
         self.estado = estado
-
-    def __repr__(self):
-        return f'<EncuestaParametro Encuesta:{self.encuesta_id} Parametro:{self.parametro_id}>'
+        self.fecha_inicio = fecha_inicio
+        self.fecha_fin = fecha_fin if fecha_fin else fecha_inicio + datetime.timedelta(days=30)
+        self.comentarios = comentarios
+        self.rondas = rondas
 
     def to_dict(self):
         return {
             'id': self.id,
-            'encuesta_id': self.encuesta_id,
-            'parametro_id': self.parametro_id,
             'aplicacion_id': self.aplicacion_id,
             'estado': self.estado,
-            'fecha_creacion': self.fecha_creacion.isoformat() if self.fecha_creacion else None,
+            'fecha_inicio': self.fecha_inicio.isoformat() if self.fecha_inicio else None,
+            'fecha_fin': self.fecha_fin.isoformat() if self.fecha_fin else None,
+            'rondas': self.rondas,
+            'comentarios': self.comentarios,
+            'parametros': [p.to_dict() for p in self.parametros],
+            'usuarios':   [u.to_dict() for u in self.usuarios],
         }
+    
+    @staticmethod
+    def obtener_por_id(encuesta_parametro_id):
+        return Evaluacion.query.get(encuesta_parametro_id)
+    
+    @staticmethod
+    def obtener_todos():
+        return Evaluacion.query.all()
+    
+    @staticmethod
+    def obtener_por_aplicacion(aplicacion_id):
+        return Evaluacion.query.filter_by(aplicacion_id=aplicacion_id).all()
+    
+    @staticmethod
+    def obtener_por_parametro(parametro_id):
+        return Evaluacion.query.filter_by(parametro_id=parametro_id).all()
+    
+    @staticmethod
+    def obtener_por_estado(estado):
+        return Evaluacion.query.filter_by(estado=estado).all()
 
 
 # ------------------------
-# Modelo de Resultados de Evaluación por Ronda
+# Tabla intermedia Evaluación <-> Parámetro (n-a-n)
 # ------------------------
-class ResultadoEvaluacion(db.Model):
-    __tablename__ = 'resultados_evaluacion'
+class EvaluacionParametro(db.Model):
+    __tablename__ = 'evaluacion_parametro'
 
-    id = db.Column(db.Integer, primary_key=True)
-    aplicacion_id = db.Column(db.Integer, db.ForeignKey('aplicaciones.id'), nullable=False)
-    evaluador_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
-    ronda_id = db.Column(db.Integer, db.ForeignKey('rondas_evaluacion.id'), nullable=False)
+    evaluacion_id = db.Column(db.Integer, db.ForeignKey('evaluaciones.id'), primary_key=True)
+    encuesta_id  = db.Column(db.Integer, db.ForeignKey('encuesta.id'), primary_key=True)
 
-    # Métricas estadísticas calculadas tras cada ronda
-    puntuacion_media = db.Column(db.Float, nullable=False)
-    desviacion_estandar = db.Column(db.Float, nullable=False)
-    puntuacion_minima = db.Column(db.Float, nullable=False)
-    puntuacion_maxima = db.Column(db.Float, nullable=False)
-    rango_puntuacion = db.Column(db.Float, nullable=False)
-    puntuacion_mediana = db.Column(db.Float, nullable=False)
-    puntuacion_moda = db.Column(db.Float, nullable=True)
+# ------------------------
+# Tabla intermedia Evaluación <-> Usuario (n-a-n)
+# ------------------------
+class EvaluacionUsuario(db.Model):
+    __tablename__ = 'evaluacion_usuario'
 
-    # Justificación del evaluador (opcional pero útil para análisis cualitativos)
-    justificacion = db.Column(db.Text, nullable=True)
-
-    fecha_envio = db.Column(db.DateTime, default=datetime.timezone.utc)
-
-    def __repr__(self):
-        return f'<ResultadoEvaluacion App:{self.aplicacion_id} Ronda:{self.ronda_id} Eval:{self.evaluador_id}>'
+    evaluacion_id = db.Column(db.Integer, db.ForeignKey('evaluaciones.id'), primary_key=True)
+    usuario_id    = db.Column(db.Integer, db.ForeignKey('usuarios.id'), primary_key=True)
+    
+    

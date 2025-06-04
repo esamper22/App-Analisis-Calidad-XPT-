@@ -53,7 +53,7 @@ class Usuario(UserMixin, db.Model):
             return None
         return Usuario.query.get(data.get('user_id'))
 
-    def to_json(self) -> dict:
+    def to_dict(self) -> dict:
         return {
             'id': self.id,
             'nombre_completo': self.nombre_completo,
@@ -63,3 +63,31 @@ class Usuario(UserMixin, db.Model):
             'activo': self.activo,
             'fecha_creacion': self.fecha_creacion.isoformat()
         }
+    
+    @staticmethod
+    def obtener_por_id(usuario_id: int) -> 'Usuario':
+        return Usuario.query.get(usuario_id)
+    
+    @staticmethod
+    def obtener_por_nombre_usuario(nombre_usuario: str) -> 'Usuario':
+        return Usuario.query.filter_by(nombre_usuario=nombre_usuario).first()
+    
+    @staticmethod
+    def obtener_por_correo(correo: str) -> 'Usuario':
+        return Usuario.query.filter_by(correo=correo).first()
+    
+    @staticmethod
+    def obtener_todos() -> list:
+        return Usuario.query.all()
+    
+    @staticmethod
+    def obtener_activos() -> list:
+        return Usuario.query.filter_by(activo=True).all()
+    
+    @staticmethod
+    def obtener_inactivos() -> list:
+        return Usuario.query.filter_by(activo=False).all()
+    
+    @staticmethod
+    def obtener_por_rol(rol: Rol) -> list:
+        return Usuario.query.filter_by(rol=rol).all()

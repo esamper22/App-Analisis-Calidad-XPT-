@@ -1,18 +1,25 @@
+import datetime
 from flask import Blueprint, render_template, request, jsonify
 from sqlalchemy.exc import SQLAlchemyError
-from app.models.encuesta import Encuesta
-from flask_login import current_user, login_required
+from app.models.evaluacion import Encuesta, EvaluacionParametro, EvaluacionUsuario, Evaluacion
+from flask_login import login_required
 
 from app.extension import db
 from app.models.usuario import Usuario
+from app.models.rol import Rol
 from app.forms.create_user import UsuarioForm
 from app.decorators.jefe_dep import jefe_required
 from app.models.aplicacion import Aplicacion, TipoAplicacion
 from app.utils.iconos import obtener_iconos_bootstrap
-from app.models.evaluacion import ParametroEvaluacion
+from app.models.evaluacion import Encuesta, Evaluacion
 
 jefe_dep_bp = Blueprint('jefe_dep', __name__, url_prefix='/jefe_dep')
 
+
+
+# ---------------------------------------------------------------------
+#                       Validaciones y Serialización                  #
+# ---------------------------------------------------------------------
 
 def validar_pregunta(texto):
     if not texto or not texto.strip():
@@ -25,24 +32,35 @@ def serializar(data=None):
     return [d.to_dict() for d in data]
 
 
+
+# -----------------------------------------------------------------
+#                       PANEL JEFE DEPARTAMENTO                   #
+# -----------------------------------------------------------------
+
 @jefe_dep_bp.route('/dashboard')
 @login_required
 @jefe_required
 def dashboard():
     users = Usuario.query.all()
-    encuestas = Encuesta.query.all()
+    evaluadores = Usuario.obtener_por_rol(rol=Rol.EVALUADOR)
+    # encuestas = Encuesta.query.all()
     
     return render_template('dashboard/jefe_departamento.html',
                            users=users,
-                           encuestas=encuestas,
+                        #    encuestas=encuestas,
                            form_user=UsuarioForm(),
                            tipos_aplicacion = serializar(TipoAplicacion.obtener_todos()),
                            apps=serializar(Aplicacion.obtener_todas()),
+                           evaluadores=serializar(evaluadores),
                            iconos_bootstrap=obtener_iconos_bootstrap(),
-                           parametros=serializar(ParametroEvaluacion.obtener_todos()),
+                           parametros=serializar(Encuesta.obtener_todos()),
                            )
 
-# ---------------------- ENCUESTAS ----------------------
+
+
+# -----------------------------------------------------------------
+#                            Encuestas                            #
+# -----------------------------------------------------------------
 
 @jefe_dep_bp.route('/encuestas', methods=['POST'])
 @login_required
@@ -121,7 +139,9 @@ def eliminar_encuesta(id):
     })
 
 
-# ---------------------- APLICACIONES ----------------------
+# -----------------------------------------------------------------
+#                       APLICACIONES                              #
+# -----------------------------------------------------------------
 
 @jefe_dep_bp.route('/aplicacion', methods=['POST'])
 @login_required
@@ -270,9 +290,10 @@ def eliminar_aplicacion(app_id):
         db.session.rollback()
         return jsonify({'error': 'Error al eliminar la aplicación', 'details': str(e)}), 500
 
-# ---------------------- TIPOS DE APLICACION ----------------------
 
-# Rutas para manejo de TipoAplicacion en jefe_dep_bp
+# -----------------------------------------------------------------
+#                       TIPOS DE APLICACION                       #
+# -----------------------------------------------------------------
 @jefe_dep_bp.route('/tipo_aplicacion', methods=['POST'])
 @login_required
 @jefe_required
@@ -305,7 +326,6 @@ def crear_tipo_aplicacion():
         return jsonify(success=False, message='Error al guardar el nuevo tipo.'), 500
 
 
-# cargar todos los tipos de aplicación
 @jefe_dep_bp.route('/tipo_aplicacion', methods=['GET'])
 @login_required
 @jefe_required
@@ -380,7 +400,10 @@ def eliminar_tipo_aplicacion(tipo_id):
         return jsonify(success=False, message='Error al eliminar el tipo.'), 500
 
 
-# ------------------------ Parametro Evaluacion ------------------------
+
+# -----------------------------------------------------------------
+#                       PARAMETROS EVALUACION                     #
+# -----------------------------------------------------------------
 @jefe_dep_bp.route('/parametro_evaluacion', methods=['GET'])
 @login_required
 @jefe_required
@@ -390,7 +413,7 @@ def obtener_parametros_evaluacion():
     Retorna JSON { success: True, parametros: [...] } o { success: False, message: ... }.
     """
     try:
-        parametros = ParametroEvaluacion.obtener_todos()
+        parametros = Encuesta.obtener_todos()
         return jsonify(success=True, parametros=serializar(parametros)), 200
     except Exception as e:
         return jsonify(success=False, message='Error al obtener los parámetros de evaluación.'), 500
@@ -435,12 +458,12 @@ def crear_parametro_evaluacion():
             return jsonify({'error': 'La cantidad de estados debe coincidir con la cantidad de pesos.'}), 400
         
 
-    existente = ParametroEvaluacion.query.filter_by(nombre=nombre).first()
+    existente = Encuesta.query.filter_by(nombre=nombre).first()
     if existente:
         return jsonify({'error': 'Ya existe un parámetro con ese nombre.'}), 409
 
     try:
-        nuevo_parametro = ParametroEvaluacion(
+        nuevo_parametro = Encuesta(
             nombre=nombre,
             descripcion=descripcion,
             # tipo=tipo,
@@ -451,7 +474,7 @@ def crear_parametro_evaluacion():
         db.session.commit()
         return jsonify({
             'message': 'Parámetro creado exitosamente.',
-            'parametros': serializar(ParametroEvaluacion.obtener_todos())
+            'parametros': serializar(Encuesta.obtener_todos())
         }), 201
     except Exception as e:
         db.session.rollback()
@@ -466,7 +489,7 @@ def editar_parametro_evaluacion(parametro_id):
     Espera un JSON con 'nombre', 'descripcion', 'tipo', 'peso', 'peso_minimo', 'peso_maximo' y opcionalmente 'estados'.
     Retorna un JSON con el parámetro actualizado o un error.
     """
-    parametro = ParametroEvaluacion.obtener_por_id(parametro_id)
+    parametro = Encuesta.obtener_por_id(parametro_id)
     if not parametro:
         return jsonify({'error': 'Parámetro no encontrado.'}), 404
 
@@ -499,9 +522,9 @@ def editar_parametro_evaluacion(parametro_id):
         if len(estados) != len(pesos_lista):
             return jsonify({'error': 'La cantidad de estados debe coincidir con la cantidad de pesos.'}), 400
     
-    otro = ParametroEvaluacion.query.filter(
-        ParametroEvaluacion.nombre == nombre,
-        ParametroEvaluacion.id != parametro_id
+    otro = Encuesta.query.filter(
+        Encuesta.nombre == nombre,
+        Encuesta.id != parametro_id
     ).first()
     if otro:
         return jsonify({'error': 'Ya existe otro parámetro con ese nombre.'}), 409
@@ -516,7 +539,7 @@ def editar_parametro_evaluacion(parametro_id):
         db.session.commit()
         return jsonify({
             'message': 'Parámetro actualizado exitosamente.',
-            'parametros': serializar(ParametroEvaluacion.obtener_todos())
+            'parametros': serializar(Encuesta.obtener_todos())
         }), 200
     except Exception as e:
         db.session.rollback()
@@ -530,7 +553,7 @@ def eliminar_parametro_evaluacion(parametro_id):
     Elimina un parámetro de evaluación existente.
     Retorna un JSON con el mensaje de éxito o un error.
     """
-    parametro = ParametroEvaluacion.obtener_por_id(parametro_id)
+    parametro = Encuesta.obtener_por_id(parametro_id)
     if not parametro:
         return jsonify({'error': 'Parámetro no encontrado.'}), 404
 
@@ -539,14 +562,242 @@ def eliminar_parametro_evaluacion(parametro_id):
         db.session.commit()
         return jsonify({
             'message': 'Parámetro eliminado exitosamente.',
-            'parametros': serializar(ParametroEvaluacion.obtener_todos())
+            'parametros': serializar(Encuesta.obtener_todos())
         }), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
 
-# -------------------- Actualizar Todo --------------------
+# -----------------------------------------------------------------
+#                           EVALUACION                            #
+# -----------------------------------------------------------------
+@jefe_dep_bp.route('/evaluacion', methods=['GET'])
+@login_required
+@jefe_required
+def obtener_evaluaciones():
+    """
+    Devuelve todas las evaluaciones en formato JSON.
+    Retorna JSON { success: True, evaluaciones: [...] } o { success: False, message: ... }.
+    """
+    try:
+        evaluaciones = Evaluacion.obtener_todos()
+        return jsonify(success=True, evaluaciones=serializar(evaluaciones)), 200
+    except Exception as e:
+        print(f"Error al obtener evaluaciones: {e}")
+        return jsonify(success=False, message='Error al obtener las evaluaciones.'), 500
+
+
+@jefe_dep_bp.route('/evaluacion', methods=['POST'])
+@login_required
+@jefe_required
+def crear_evaluacion():
+    """
+    Crea una nueva evaluación.
+    Espera un JSON con:
+      - app_id: int
+      - parametros: [int, int, ...]     (lista de IDs de Encuesta)
+      - evaluadores: [int, int, ...]    (lista de IDs de Usuario)
+      - fecha_inicio: "YYYY-MM-DD"
+      - fecha_fin:    "YYYY-MM-DD"
+      - rondas: int (opcional, por defecto 1)
+      - comentarios: string (opcional)
+    Retorna JSON con mensaje y la lista completa de evaluaciones.
+    """
+    data = request.get_json() or {}
+
+    app_id = data.get('app_id')
+    lista_parametros = data.get('parametros', [])
+    lista_evaluadores = data.get('evaluadores', [])
+    fecha_inicio = data.get('fecha_inicio')
+    fecha_fin = data.get('fecha_fin')
+    rondas = data.get('rondas', 1)
+    comentarios = data.get('comentarios', '')
+
+    # Validaciones básicas
+    if not app_id or not lista_parametros or not lista_evaluadores or not fecha_inicio or not fecha_fin:
+        return jsonify(error='Faltan campos obligatorios.'), 400
+
+    # Verificar aplicación
+    app_obj = Aplicacion.obtener_por_id(app_id)
+    if not app_obj:
+        return jsonify(error='Aplicación no encontrada.'), 404
+
+    # Verificar que todos los parámetros existan
+    encuestas_objs = Encuesta.query.filter(Encuesta.id.in_(lista_parametros)).all()
+    if len(encuestas_objs) != len(lista_parametros):
+        return jsonify(error='Algún parámetro de evaluación no existe.'), 404
+
+    # Verificar que todos los usuarios existan
+    usuarios_objs = Usuario.query.filter(Usuario.id.in_(lista_evaluadores)).all()
+    if len(usuarios_objs) != len(lista_evaluadores):
+        return jsonify(error='Algún evaluador no existe.'), 404
+
+    # Parsear fechas
+    try:
+        fi = datetime.datetime.fromisoformat(fecha_inicio)
+        ff = datetime.datetime.fromisoformat(fecha_fin)
+    except Exception:
+        return jsonify(error='Formato de fecha inválido. Use YYYY-MM-DD.'), 400
+
+    if ff < fi:
+        return jsonify(error='La fecha de fin no puede ser anterior a la fecha de inicio.'), 400
+
+    try:
+        # Crear Evaluacion
+        nueva_eval = Evaluacion(
+            aplicacion_id=app_id,
+            fecha_inicio=fi,
+            fecha_fin=ff,
+            rondas=rondas,
+            comentarios=comentarios
+        )
+        db.session.add(nueva_eval)
+        db.session.flush()  # Para obtener nueva_eval.id
+
+        # Asociar parámetros (muchos-a-muchos)
+        for encuesta_obj in encuestas_objs:
+            nueva_eval.parametros.append(encuesta_obj)
+
+        # Asociar evaluadores (muchos-a-muchos)
+        for usuario_obj in usuarios_objs:
+            nueva_eval.usuarios.append(usuario_obj)
+
+        db.session.commit()
+
+        todas = Evaluacion.obtener_todos()
+        return jsonify(
+            message='Evaluación creada exitosamente.',
+            evaluaciones=[e.to_dict() for e in todas]
+        ), 201
+
+    except Exception as ex:
+        db.session.rollback()
+        return jsonify(error='Error al crear la evaluación.', details=str(ex)), 500
+
+
+@jefe_dep_bp.route('/evaluacion/<int:eval_id>', methods=['PUT'])
+@login_required
+@jefe_required
+def editar_evaluacion(eval_id):
+    """
+    Edita una evaluación existente.
+    Espera un JSON con el mismo esquema que en POST:
+      - app_id: int
+      - parametros: [int, int, ...]
+      - evaluadores: [int, int, ...]
+      - fecha_inicio: YYYY-MM-DD
+      - fecha_fin:    YYYY-MM-DD
+      - rondas: int
+      - comentarios: str
+    Retorna JSON con mensaje y lista completa de evaluaciones.
+    """
+    eval_obj = Evaluacion.obtener_por_id(eval_id)
+    if not eval_obj:
+        return jsonify(error='Evaluación no encontrada.'), 404
+
+    data = request.get_json() or {}
+    app_id = data.get('app_id')
+    lista_parametros = data.get('parametros', [])
+    lista_evaluadores = data.get('evaluadores', [])
+    fecha_inicio = data.get('fecha_inicio')
+    fecha_fin = data.get('fecha_fin')
+    rondas = data.get('rondas', eval_obj.rondas)
+    comentarios = data.get('comentarios', eval_obj.comentarios)
+
+    if not app_id or not lista_parametros or not lista_evaluadores or not fecha_inicio or not fecha_fin:
+        return jsonify(error='Faltan campos obligatorios.'), 400
+
+    # Verificar aplicación
+    app_obj = Aplicacion.obtener_por_id(app_id)
+    if not app_obj:
+        return jsonify(error='Aplicación no encontrada.'), 404
+
+    # Verificar parámetros
+    encuestas_objs = Encuesta.query.filter(Encuesta.id.in_(lista_parametros)).all()
+    if len(encuestas_objs) != len(lista_parametros):
+        return jsonify(error='Algún parámetro de evaluación no existe.'), 404
+
+    # Verificar usuarios
+    usuarios_objs = Usuario.query.filter(Usuario.id.in_(lista_evaluadores)).all()
+    if len(usuarios_objs) != len(lista_evaluadores):
+        return jsonify(error='Algún evaluador no existe.'), 404
+
+    # Parsear fechas
+    try:
+        fi = datetime.datetime.fromisoformat(fecha_inicio)
+        ff = datetime.datetime.fromisoformat(fecha_fin)
+    except Exception:
+        return jsonify(error='Formato de fecha inválido. Use YYYY-MM-DD.'), 400
+
+    if ff < fi:
+        return jsonify(error='La fecha de fin no puede ser anterior a la fecha de inicio.'), 400
+
+    try:
+        # 1) Actualizar campos básicos
+        eval_obj.aplicacion_id = app_id
+        eval_obj.fecha_inicio = fi
+        eval_obj.fecha_fin = ff
+        eval_obj.rondas = rondas
+        eval_obj.comentarios = comentarios
+
+        # 2) Limpiar asociaciones parámetros y volver a agregar
+        eval_obj.parametros.clear()
+        for encuesta_obj in encuestas_objs:
+            eval_obj.parametros.append(encuesta_obj)
+
+        # 3) Limpiar asociaciones usuarios y volver a agregar
+        eval_obj.usuarios.clear()
+        for usuario_obj in usuarios_objs:
+            eval_obj.usuarios.append(usuario_obj)
+
+        db.session.commit()
+
+        todas = Evaluacion.obtener_todos()
+        return jsonify(
+            message='Evaluación actualizada exitosamente.',
+            evaluaciones=[e.to_dict() for e in todas]
+        ), 200
+
+    except Exception as ex:
+        db.session.rollback()
+        return jsonify(error='Error al actualizar la evaluación.', details=str(ex)), 500
+
+    
+
+@jefe_dep_bp.route('/evaluacion/<int:eval_id>', methods=['DELETE'])
+@login_required
+@jefe_required
+def eliminar_evaluacion(eval_id):
+    """
+    Elimina una evaluación y sus asociaciones intermedias.
+    """
+    eval_obj = Evaluacion.obtener_por_id(eval_id)
+    if not eval_obj:
+        return jsonify(error='Evaluación no encontrada.'), 404
+
+    try:
+        # Las relaciones muchos-a-muchos se manejan automáticamente porque
+        # en el modelo se definieron como `secondary` sin `cascade="all, delete"`.
+        # Así que basta eliminar el registro padre:
+        db.session.delete(eval_obj)
+        db.session.commit()
+
+        todas = Evaluacion.obtener_todos()
+        return jsonify(
+            message='Evaluación eliminada exitosamente.',
+            evaluaciones=[e.to_dict() for e in todas]
+        ), 200
+
+    except Exception as ex:
+        db.session.rollback()
+        return jsonify(error='Error al eliminar la evaluación.', details=str(ex)), 500
+
+
+
+# -----------------------------------------------------------------
+#                       ACTUALIZAR TODO                           #
+# -----------------------------------------------------------------
 @jefe_dep_bp.route('/actualizar_todo', methods=['GET'])
 @login_required
 @jefe_required
@@ -557,15 +808,18 @@ def actualizar_todo():
     """
     try:
         users = Usuario.query.all()
-        encuestas = Encuesta.query.all()
+        # encuestas = Encuesta.query.all()
         aplicaciones = Aplicacion.obtener_todas()
         tipos_aplicacion = TipoAplicacion.obtener_todos()
 
         return jsonify({
             'users': serializar(users),
-            'encuestas': serializar(encuestas),
             'aplicaciones': serializar(aplicaciones),
-            'tipos_aplicacion': serializar(tipos_aplicacion)
+            'tipos_aplicacion': serializar(tipos_aplicacion),
+            # 'encuestas': serializar(encuestas),
+            'parametros': serializar(Encuesta.obtener_todos()),
+            'iconos_bootstrap': obtener_iconos_bootstrap(),
+            'evaluacion': serializar(Evaluacion.obtener_todos())
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

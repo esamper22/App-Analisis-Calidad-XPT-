@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
 from app.models.aplicacion import Aplicacion
-from app.models.evaluacion import ResultadoEvaluacion
+from app.models.resultado import ResultadoEvaluacion
 from app.extension import db
 from app.decorators.expert import expert_required
 

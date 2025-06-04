@@ -348,7 +348,7 @@
                                 </button>
                             </form>
                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#addParametroModal" id="addParametroBtn" >
+                                data-bs-target="#addParametroModal" id="addParametroBtn">
                                 <i class="bi bi-plus-lg me-1"></i> Añadir Encuesta
                             </button>
                             <button class="btn btn-outline-secondary btn-sm d-flex align-items-center" type="button"
@@ -494,100 +494,62 @@
         </div>
     </div>
 
-    <!-- 4. Evaluacion -->
+    <!-- 4. Evaluación -->
     <div class="content-section" id="page-4">
         <div class="row">
             <div class="col-12">
                 <div class="section-title">
                     <h2><i class="bi bi-star me-2"></i>Evaluación de Aplicaciones</h2>
-                    <p class="text-muted ">Proceso de evaluación de aplicaciones</p>
+                    <p class="text-muted">Proceso de evaluación y asignación de evaluadores</p>
                 </div>
             </div>
         </div>
+
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Evaluaciones Pendientes</h5>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAppModal">
-                            <i class="bi bi-plus-circle me-1"></i> Nueva Evaluación
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table table-hover mb-0" id="evaluationsTable">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Aplicación</th>
-                                        <th scope="col">Estado</th>
-                                        <th scope="col">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="evaluationsBody">
-                                    {% if evaluations %}
-                                    {% for evaluation in evaluations %}
-                                    <tr data-evaluation-id="{{ evaluation.id }}">
-                                        <th scope="row">{{ loop.index }}</th>
-                                        <td class="app-name">{{ evaluation.app_name }}</td>
-                                        <td class="app-status">
-                                            {% if evaluation.status == 'pendiente' %}
-                                            <span class="badge bg-warning">Pendiente</span>
-                                            {% elif evaluation.status == 'en progreso' %}
-                                            <span class="badge bg-info">En Progreso</span>
-                                            {% elif evaluation.status == 'completada' %}
-                                            <span class="badge bg-success">Completada</span>
-                                            {% else %}
-                                            <span class="badge bg-secondary">Desconocido</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <button type="button"
-                                                class="btn btn-outline-primary btn-sm rounded-circle shadow-sm me-2 btn-view"
-                                                style="width: 32px; height: 32px;" title="Ver Detalles"
-                                                data-id="{{ evaluation.id }}"
-                                                data-app-name="{{ evaluation.app_name | e }}">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </button>
-                                            <button type="button"
-                                                class="btn btn-outline-success btn-sm rounded-circle shadow-sm me-2 btn-edit"
-                                                style="width: 32px; height: 32px;" title="Editar Evaluación"
-                                                data-id="{{ evaluation.id }}"
-                                                data-app-name="{{ evaluation.app_name | e }}">
-                                                <i class="bi bi-pencil-fill"></i>
-                                            </button>
-                                            <button type="button"
-                                                class="btn btn-outline-danger btn-sm rounded-circle shadow-sm btn-delete"
-                                                style="width: 32px; height: 32px;" title="Eliminar Evaluación"
-                                                data-id="{{ evaluation.id }}">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                    {% else %}
-                                    <tr>
-                                        <td colspan="4" class="text-center">No hay evaluaciones pendientes.</td>
-                                    </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
+                <div class="card shadow-sm border-0">
+
+                    <!-- Tabla de Evaluaciones -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Evaluaciones Pendientes</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEvaluationModal"
+                                id="addEvalBtn">
+                                <i class="bi bi-plus-circle me-1"></i> Nueva Evaluación
+                            </button>
                         </div>
-                    </div>
-                    <div class="card-footer bg-white">
-                        <nav aria-label="Paginación de evaluaciones">
-                            <ul class="pagination justify-content-center mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                                <input type="text" id="searchEvaluationsInput" class="form-control shadow-sm me-2"
+                                    placeholder="Buscar evaluación por app o parámetro...">
+                                <button class="btn btn-outline-secondary" type="button" id="clearSearchEval">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Aplicación</th>
+                                            <th scope="col">Parámetro</th>
+                                            <th scope="col">Estado</th>
+                                            <th scope="col">Inicio</th>
+                                            <th scope="col">Fin</th>
+                                            <th scope="col">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="evaluationsBody">
+                                        <!-- Se completa dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <nav aria-label="Paginación de evaluaciones">
+                                <ul class="pagination justify-content-center mb-0" id="evaluationsPagination"></ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -852,6 +814,7 @@
 
 {% include 'components/modals/add_app.html' %}
 {% include 'components/modals/tipo_app.html' %}
+{% include 'components/modals/evaluacion.html' %}
 {% include 'components/modals/parametro_evaluacion.html' %}
 
 {% endblock %}

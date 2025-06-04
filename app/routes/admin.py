@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 import re
 from flask import current_app
 from app.forms.create_user import UsuarioForm, UsuarioEditForm
-from app.models.encuesta import Encuesta
+from app.models.evaluacion import Encuesta
 from app.decorators.admin import admin_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -18,7 +18,7 @@ EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.\w+$")
 
 def get_users():
     usuarios = Usuario.query.filter(Usuario.id != current_user.id).all()
-    return [u.to_json() for u in usuarios]
+    return [u.to_dict() for u in usuarios]
 
 @admin_bp.route('/dashboard')
 @login_required
@@ -203,23 +203,8 @@ def obtener_usuario(user_id):
             return jsonify({'error': 'Usuario no encontrado'}), 404
 
         # Serializar usuario
-        usuario_data = {
-            'id': user.id,
-            'nombre_completo': user.nombre_completo,
-            'nombre_usuario': user.nombre_usuario,
-            'correo': user.correo,
-            'rol': user.rol.value if hasattr(user.rol, 'value') else str(user.rol),
-            'activo': user.activo
-        }
-        return jsonify({'usuario': usuario_data})
+        return jsonify({'usuario': user.to_dict()}), 200
 
     except Exception as e:
         current_app.logger.exception('Error al obtener usuario')
         return jsonify({'error': 'Error interno del servidor'}), 500
-
-    user = Usuario.query.get(id)
-    if not user:
-        return jsonify({'error': 'Usuario no encontrado'}), 404
-
-    # Devolver datos relevantes en JSON
-    return jsonify(user.to_json()), 200
