@@ -10,7 +10,7 @@ class Evaluacion(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     aplicacion_id = db.Column(db.Integer, db.ForeignKey('aplicaciones.id'), nullable=False)
-    estado = db.Column(db.String(50), nullable=False, default='pendiente')  # 'pendiente', 'en progreso', 'completada'
+    estado = db.Column(db.String(50), nullable=False, default='no enviada')  # 'pendiente', 'en progreso', 'completada'
     rondas = db.Column(db.Integer, nullable=False, default=3)  # Número de rondas de evaluación
     fecha_creacion = db.Column(db.DateTime, default=db.func.current_timestamp())
     fecha_inicio = db.Column(db.DateTime, nullable=False)

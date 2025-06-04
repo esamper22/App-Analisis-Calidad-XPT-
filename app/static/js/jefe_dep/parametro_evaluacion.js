@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pesoInput.type = 'number';
         pesoInput.className = 'form-control shadow-sm';
         pesoInput.name = 'pesos[]';
-        pesoInput.placeholder = 'Peso';
+        pesoInput.placeholder = 'Peso Ej:(2)';
         pesoInput.required = true;
         pesoInput.min = 1;
         pesoInput.max = 10;
@@ -327,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
         estadoInput.type = 'text';
         estadoInput.className = 'form-control shadow-sm';
         estadoInput.name = 'estados[]';
-        estadoInput.placeholder = 'Estado';
+        estadoInput.placeholder = 'Estado Ej: (mal)';
         estadoInput.required = true;
         estadoInput.value = estado;
 

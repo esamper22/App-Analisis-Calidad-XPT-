@@ -814,8 +814,8 @@ def enviar_evaluacion(evaluacion_id):
         return jsonify({'error': 'Evaluación no encontrada.'}), 404
 
     try:
-        # Cambiar estado de la evaluación a "enviado"
-        evaluacion.estado = 'enviado'
+        # Cambiar estado de la evaluación a "pendiente de evaluacion una vez eniada"
+        evaluacion.estado = 'pendiente'
         db.session.commit()
         
         NotificacionEvaluacion.enviar_notificaciones(
