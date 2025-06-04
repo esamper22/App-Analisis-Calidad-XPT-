@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   };
+
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------- Cargar métricas y renderizar gráficos ----------
   async function loadMetricsAndCharts() {
     try {
-      const res = await fetch('/evaluador/metrics');
+      const res = await fetch('/expert/metrics');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       // data = { months: [...], completed_per_month: [...], platforms: [...], by_platform: [...] }
@@ -52,7 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         options: {
           responsive: true,
-          scales: { y: { beginAtZero: true } }
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
         }
       });
 
@@ -79,43 +88,58 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadMiniCalendar() {
     const today = new Date();
     const calendarEl = document.getElementById('mini-calendar');
+    const upcomingList = document.getElementById('upcoming-events-list');
     const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-    // Traer eventos próximos (opcional)
+    // Traer eventos próximos
     let events = [];
     try {
-      const res = await fetch('/evaluador/events');
+      const res = await fetch('/expert/events');
       if (res.ok) {
         const json = await res.json();
-        events = json.events; // [{ date: "2024-03-15", title: "Revisión App Mobile" }, ...]
+        events = json.events; // [{ date: "2025-06-10", title: "Evalúa 'App X' (Ronda 2)" }, ...]
       }
-    } catch { /* Silenciar error */ }
+    } catch {
+      // Silenciar error
+    }
 
-    const daysInMonth = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
-    let calendarHTML = `<div class="mb-2 fw-bold">${monthNames[today.getMonth()]} ${today.getFullYear()}</div>`;
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    // Encabezado del mes
+    let calendarHTML = `<div class="mb-2 fw-bold text-center">${monthNames[currentMonth]} ${currentYear}</div>`;
     calendarHTML += `<div class="d-grid gap-1" style="grid-template-columns: repeat(7, 1fr);">`;
 
     for (let i = 1; i <= daysInMonth; i++) {
-      const iso = new Date(today.getFullYear(), today.getMonth(), i).toISOString().slice(0,10);
+      const iso = new Date(currentYear, currentMonth, i).toISOString().slice(0,10);
       const isToday = (i === today.getDate());
       const hasEvent = events.some(ev => ev.date === iso);
-      let cellClass = 'text-center p-1';
-      if (isToday) cellClass += ' bg-gradient-primary text-white rounded';
-      else if (hasEvent) cellClass += ' bg-info text-white rounded';
+      let cellClass = 'text-center p-2';
+
+      if (isToday) {
+        cellClass += ' bg-primary text-white rounded';
+      } else if (hasEvent) {
+        cellClass += ' bg-info text-white rounded';
+      }
 
       calendarHTML += `<div class="${cellClass}">${i}</div>`;
     }
-    calendarHTML += '</div>';
+
+    calendarHTML += `</div>`;
     calendarEl.innerHTML = calendarHTML;
 
-    // Lista de eventos
-    const upcomingList = document.getElementById('upcoming-events-list');
-    if (upcomingList && events.length) {
-      upcomingList.innerHTML = events.map(ev => `
-        <a href="#" class="list-group-item list-group-item-action px-3 py-2">
-          <i class="fas fa-clock me-2 text-info"></i>${ev.title} - ${formatDateISO(ev.date)}
-        </a>
-      `).join('');
+    // Listado de eventos próximos
+    if (upcomingList) {
+      if (events.length) {
+        upcomingList.innerHTML = events.map(ev => `
+          <a href="#" class="list-group-item list-group-item-action px-3 py-2">
+            <i class="fas fa-clock me-2 text-info"></i>${ev.title} - ${formatDateISO(ev.date)}
+          </a>
+        `).join('');
+      } else {
+        upcomingList.innerHTML = `<li class="list-group-item text-center text-muted">Sin próximos eventos</li>`;
+      }
     }
   }
 

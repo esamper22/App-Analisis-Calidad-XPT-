@@ -22,6 +22,12 @@ class Aplicacion(db.Model):
     # Relaciones con otras entidades
     evaluaciones = db.relationship('ResultadoEvaluacion', backref='aplicacion', lazy=True)
     rondas = db.relationship('RondaEvaluacion', backref='aplicacion', lazy=True)
+    
+    # Ejemplo de cómo acceder a las evaluaciones de una aplicación desde la app:
+    # 
+    # app = Aplicacion.obtener_por_id(1)  # Obtener una aplicación por su ID
+    # for evaluacion in app.evaluaciones:
+    #     print(evaluacion)  # Aquí puedes acceder a cada evaluación relacionada con la aplicación
 
     def __init__(self, nombre, descripcion=None, tipo_aplicacion_id=None, version='1.0.0', icono=None):
         self.nombre = nombre

@@ -10,7 +10,8 @@ class Evaluacion(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     aplicacion_id = db.Column(db.Integer, db.ForeignKey('aplicaciones.id'), nullable=False)
-    estado = db.Column(db.String(50), nullable=False, default='no enviada')  # 'pendiente', 'en progreso', 'completada'
+    estado = db.Column(db.String(50), nullable=False, default='pendiente')  # 'pendiente', 'en progreso', 'completada'
+    enviada = db.Column(db.Boolean, nullable=False, default=False)
     rondas = db.Column(db.Integer, nullable=False, default=3)  # Número de rondas de evaluación
     fecha_creacion = db.Column(db.DateTime, default=db.func.current_timestamp())
     fecha_inicio = db.Column(db.DateTime, nullable=False)
@@ -48,6 +49,7 @@ class Evaluacion(db.Model):
             'fecha_inicio': self.fecha_inicio.isoformat() if self.fecha_inicio else None,
             'fecha_fin': self.fecha_fin.isoformat() if self.fecha_fin else None,
             'rondas': self.rondas,
+            'enviada': self.enviada,
             'comentarios': self.comentarios,
             'parametros': [p.to_dict() for p in self.parametros],
             'usuarios':   [u.to_dict() for u in self.usuarios],
@@ -78,11 +80,15 @@ class Evaluacion(db.Model):
         return Evaluacion.query.filter_by(estado=estado).all()
 
     @staticmethod
-    def obtener_usuario_notificados(usuario_id):
+    def obtener_evaluaciones_notificados(usuario_id):
         """
-        Obtiene todas las evaluaciones en las que un usuario ha sido notificado.
+        Obtiene todas las aplicaciones en las que un usuario ha sido notificado y la evaluacion haya sido enviada        
         """
-        return Evaluacion.query.join(EvaluacionUsuario).filter(EvaluacionUsuario.usuario_id == usuario_id).all()
+        return Evaluacion.query.join(EvaluacionUsuario, Evaluacion.id == EvaluacionUsuario.evaluacion_id) \
+            .filter(
+            EvaluacionUsuario.usuario_id == usuario_id,
+            Evaluacion.estado == 'pendiente'
+            ).all()
 
 # ------------------------
 # Tabla intermedia Evaluación <-> Parámetro (n-a-n)

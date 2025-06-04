@@ -1,0 +1,65 @@
+<!-- Cuenta Mejorada -->
+<section id="cuenta-section" class="content-section">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="flex-shrink-0">
+                            <img src="{{ url_for('static', filename='images/avatar_placeholder.png') }}"
+                                class="rounded-circle" alt="Avatar" width="100" height="100">
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h2 class="mb-0">{{ current_user.nombre_completo }}</h2>
+                            <small class="text-muted">Experto {% if current_user.role %}({{ current_user.role }}){%
+                                endif
+                                %}</small>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ url_for('expert.actualizar_cuenta') }}" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Usuario</label>
+                                <input type="text" class="form-control shadow-sm" name="username"
+                                    value="{{ current_user.username }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email" class="form-control shadow-sm" name="email"
+                                    value="{{ current_user.email }}" required>
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">{{ form.email.errors[0] }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <hr class="my-4">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nueva Contraseña</label>
+                                <input type="password" class="form-control shadow-sm" name="password"
+                                    placeholder="••••••••">
+                                {% if form.password.errors %}
+                                <div class="invalid-feedback d-block">{{ form.password.errors[0] }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Confirmar Contraseña</label>
+                                <input type="password" class="form-control shadow-sm" name="confirm_password"
+                                    placeholder="••••••••">
+                                {% if form.confirm_password.errors %}
+                                <div class="invalid-feedback d-block">{{ form.confirm_password.errors[0] }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                                    <i class="fas fa-save me-2"></i>Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

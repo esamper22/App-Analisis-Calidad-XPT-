@@ -138,7 +138,7 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
       <h1 class="h3 mb-0">Bienvenido, <span class="text-primary">{{ current_user.nombre_completo }}</span></h1>
-      <small class="text-muted">Último acceso: {{ last_login }}</small>
+      <small class="text-muted">Último acceso: {{ last_login.strftime('%d %b %Y %H:%M') }}</small>
     </div>
     <div class="d-flex align-items-center gap-3">
       <!-- Notificaciones -->
@@ -326,8 +326,7 @@
               <div class="list-group">
                 {% for event in upcoming_events %}
                 <a href="#" class="list-group-item list-group-item-action px-3 py-2">
-                  <i class="fas fa-clock me-2 text-{{ 'warning' if event.date < now else 'info' }}"></i>
-                  {{ event.title }} - {{ event.date.strftime('%d %b') }}
+                  
                 </a>
                 {% endfor %}
               </div>
@@ -355,41 +354,60 @@
                   <thead class="table-light">
                     <tr>
                       <th>Aplicación</th>
-                      <th>Plataforma</th>
+                      <th>Parámetro</th>
+                      <th>Estado</th>
                       <th>Progreso</th>
-                      <th>Prioridad</th>
+                      <th>Fecha Inicio</th>
                       <th>Fecha Límite</th>
                       <th style="width: 10%;">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
+                    {% if pending_apps %}
                     {% for app in pending_apps %}
+                    {% for eval in app.evaluaciones %}
                     <tr>
                       <td>
                         <i class="fas fa-mobile-alt me-2 text-primary"></i>
                         {{ app.nombre }}
                       </td>
-                      <td>{{ app.plataforma }}</td>
+                      <td>{{ eval.parametro_nombre }}</td>
+                      <td>
+                        <span class="badge bg-{{ eval.estado_badge }}">{{ eval.estado.replace('_', ' ').capitalize()
+                          }}</span>
+                      </td>
                       <td>
                         <div class="progress" style="height: 6px;">
-                          <div class="progress-bar bg-success" style="width: {{ app.progress }}%"></div>
+                          <div class="progress-bar bg-success" style="width: {{ eval.progreso }}%"></div>
                         </div>
-                        <small class="text-muted">{{ app.progress }}% completado</small>
+                        <small class="text-muted">{{ eval.progreso }}% completado</small>
                       </td>
-                      <td><span class="badge bg-{{ app.priority_badge }}">{{ app.prioridad }}</span></td>
-                      <td>{{ app.fecha_limite.strftime('%d/%m/%Y') }}</td>
+                      <td>{{ eval.fecha_inicio.strftime('%d/%m/%Y') if eval.fecha_inicio else '' }}</td>
+                      <td>{{ eval.fecha_fin.strftime('%d/%m/%Y') if eval.fecha_fin else '' }}</td>
                       <td>
-                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                          data-bs-target="#addEvaluationModal">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-app='{
+                                  "aplicacion_id": "{{ eval.aplicacion_id }}",
+                                  "evaluacion_id": "{{ eval.evaluacion_id }}",
+                                  "estado": "{{ eval.estado }}",
+                                  "fecha_inicio": "{{ eval.fecha_inicio.isoformat() if eval.fecha_inicio else '' }}",
+                                  "fecha_fin": "{{ eval.fecha_fin.isoformat() if eval.fecha_fin else '' }}",
+                                  "rondas": "{{ eval.rondas }}",
+                                  "enviada": "{{ eval.enviada }}",
+                                  "comentarios": "{{ eval.comentarios }}",
+                                  "parametros": {{ eval.parametros|tojson }},
+                                  "usuarios": {{ eval.usuarios|tojson }}
+                                }' data-bs-target="#addEvaluationModal">
                           <i class="bi bi-check-circle me-1"></i>Evaluar
                         </button>
                       </td>
                     </tr>
+                    {% endfor %}
+                    {% endfor %}
                     {% else %}
                     <tr>
-                      <td colspan="6" class="text-center text-muted">No hay aplicaciones pendientes.</td>
+                      <td colspan="7" class="text-center text-muted">No hay aplicaciones pendientes.</td>
                     </tr>
-                    {% endfor %}
+                    {% endif %}
                   </tbody>
                 </table>
               </div>
@@ -441,22 +459,27 @@
                         </tr>
                       </thead>
                       <tbody>
+                        {% if all_evaluations %}
                         {% for ev in all_evaluations %}
                         <tr>
                           <th scope="row">{{ loop.index }}</th>
                           <td>{{ ev.aplicacion_nombre }}</td>
                           <td>{{ ev.parametro_nombre }}</td>
-                          <td><span class="badge bg-{{ ev.estado_badge }}">{{ ev.estado.replace('_', ' ').capitalize()
-                              }}</span></td>
+                          <td>
+                            <span class="badge bg-{{ ev.estado_badge }}">
+                              {{ ev.estado.replace('_', ' ').capitalize() }}
+                            </span>
+                          </td>
                           <td>{{ ev.fecha_inicio.strftime('%d/%m/%Y') }}</td>
                           <td>{{ ev.fecha_fin.strftime('%d/%m/%Y') }}</td>
                           <td>{{ ev.rondas }}</td>
                         </tr>
+                        {% endfor %}
                         {% else %}
                         <tr>
                           <td colspan="7" class="text-center text-muted">Sin datos para mostrar.</td>
                         </tr>
-                        {% endfor %}
+                        {% endif %}
                       </tbody>
                     </table>
                   </div>
@@ -468,69 +491,7 @@
       </div>
     </section>
 
-    <!-- Cuenta Mejorada -->
-    <section id="cuenta-section" class="content-section">
-      <div class="row justify-content-center">
-        <div class="col-xl-8">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <div class="d-flex align-items-center mb-4">
-                <div class="flex-shrink-0">
-                  <img src="{{ url_for('static', filename='images/avatar_placeholder.png') }}" class="rounded-circle"
-                    alt="Avatar" width="100" height="100">
-                </div>
-                <div class="flex-grow-1 ms-3">
-                  <h2 class="mb-0">{{ current_user.nombre_completo }}</h2>
-                  <small class="text-muted">Experto {% if current_user.role %}({{ current_user.role }}){% endif
-                    %}</small>
-                </div>
-              </div>
-              <form method="POST" action="{{ url_for('expert.actualizar_cuenta') }}" novalidate>
-                {{ form.hidden_tag() }}
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label class="form-label fw-semibold">Usuario</label>
-                    <input type="text" class="form-control shadow-sm" name="username"
-                      value="{{ current_user.username }}" readonly>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-semibold">Email</label>
-                    <input type="email" class="form-control shadow-sm" name="email" value="{{ current_user.email }}"
-                      required>
-                    {% if form.email.errors %}
-                    <div class="invalid-feedback d-block">{{ form.email.errors[0] }}</div>
-                    {% endif %}
-                  </div>
-                  <div class="col-12">
-                    <hr class="my-4">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-semibold">Nueva Contraseña</label>
-                    <input type="password" class="form-control shadow-sm" name="password" placeholder="••••••••">
-                    {% if form.password.errors %}
-                    <div class="invalid-feedback d-block">{{ form.password.errors[0] }}</div>
-                    {% endif %}
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-semibold">Confirmar Contraseña</label>
-                    <input type="password" class="form-control shadow-sm" name="confirm_password"
-                      placeholder="••••••••">
-                    {% if form.confirm_password.errors %}
-                    <div class="invalid-feedback d-block">{{ form.confirm_password.errors[0] }}</div>
-                    {% endif %}
-                  </div>
-                  <div class="col-12">
-                    <button type="submit" class="btn btn-primary w-100 rounded-pill">
-                      <i class="fas fa-save me-2"></i>Guardar Cambios
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    {% include 'components/modals/expert/account.html' %}
   </div>
 </div>
 {% endblock %}
@@ -542,3 +503,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.2.0"></script>
 <script src="{{ url_for('static', filename='js/expert/base.js') }}"></script>
 {% endblock %}
+
+<!-- <i class="fas fa-clock me-2 text-{{ 'warning' if event.date and event.date < now else 'info' }}"></i>
+{{ event.title }} - {{ event.date.strftime('%d %b') if event.date else event.date }} -->

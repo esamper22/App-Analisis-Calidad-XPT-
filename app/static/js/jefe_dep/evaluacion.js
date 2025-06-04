@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <tr data-eval-id="${ev.id}"
               data-aplicacion-id="${ev.aplicacion_id}"
               data-estado="${ev.estado}"
+              data-enviada="${ev.enviada}"
               data-fecha-inicio="${ev.fecha_inicio}"
               data-fecha-fin="${ev.fecha_fin}"
               data-rondas="${ev.rondas}"
@@ -96,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${paramLabels}</td>
             <td>${userLabels}</td>
             <td><span class="badge ${badgeClass} text-capitalize">${ev.estado.replace("_", " ")}</span></td>
+            <td>${ev.enviada ? "Sí" : "No"}</td>
             <td>${formatDate(ev.fecha_inicio)}</td>
             <td>${formatDate(ev.fecha_fin)}</td>
             <td>
@@ -108,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <button class="btn btn-outline-success btn-sm rounded-circle me-2 btn-eval-send"
                 title="Enviar"
                 data-id="${ev.id}"
-                ${ev.estado !== "pendiente" ? "disabled" : ""}>
+                ${ev.enviada? "disabled" : ""}>
           <i class="bi bi-send-fill"></i>
               </button>
               <button class="btn btn-outline-danger btn-sm rounded-circle btn-eval-delete"

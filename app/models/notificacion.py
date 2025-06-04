@@ -11,6 +11,7 @@ class NotificacionEvaluacion(db.Model):
     usuarios = db.Column(db.String(255), nullable=False)  # Lista de IDs de usuarios separados por comas
     mensaje = db.Column(db.String(255), nullable=False)
     fecha_creacion = db.Column(db.DateTime, default=db.func.now())
+    leida = db.Column(db.Boolean, default=False)
     id_evaluacion = db.Column(db.Integer, db.ForeignKey('evaluaciones.id'), nullable=True)
     
     evaluacion = db.relationship('Evaluacion', backref='notificaciones', lazy=True)
@@ -59,6 +60,14 @@ class NotificacionEvaluacion(db.Model):
             'mensaje': self.mensaje,
             'fecha_creacion': self.fecha_creacion.isoformat()
         }
+    
+    @staticmethod
+    def obtener_notificaciones_leidas(usuario_id: int) -> list:
+        notificaciones = NotificacionEvaluacion.query.filter(
+            NotificacionEvaluacion.usuarios.contains(str(usuario_id)),
+            NotificacionEvaluacion.leida.is_(True)
+        ).all()
+        return notificaciones
     
     @staticmethod
     def obtener_mensajes_por_usuario(usuario_id: int) -> list:

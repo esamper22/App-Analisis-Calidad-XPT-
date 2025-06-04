@@ -770,7 +770,6 @@ def editar_evaluacion(eval_id):
         db.session.rollback()
         return jsonify(error='Error al actualizar la evaluación.', details=str(ex)), 500
 
-    
 
 @jefe_dep_bp.route('/evaluacion/<int:eval_id>', methods=['DELETE'])
 @login_required
@@ -815,7 +814,7 @@ def enviar_evaluacion(evaluacion_id):
 
     try:
         # Cambiar estado de la evaluación a "pendiente de evaluacion una vez eniada"
-        evaluacion.estado = 'pendiente'
+        evaluacion.enviada = True
         db.session.commit()
         
         NotificacionEvaluacion.enviar_notificaciones(
