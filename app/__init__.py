@@ -23,7 +23,7 @@ def crear_app():
         ⚠️  Advertencia: No hay administradores registrados.
         Para registrar ejecuta este comando:
         
-        flask crear-superadmin --username=<nombre> --email=<tu@email.com>
+        flask crear-admin --username=<nombre> --email=<tu@email.com>
         """)
     
     # Registro de manejadores de error

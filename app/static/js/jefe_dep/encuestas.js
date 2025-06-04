@@ -218,6 +218,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Opcional: Si quieres, puedes inicializar la tabla con encuestas desde AJAX aquí
-  // o asumir que ya vienen renderizadas en el template.
 });

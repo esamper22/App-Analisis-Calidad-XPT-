@@ -1,0 +1,77 @@
+<!-- Animación al agregar/eliminar -->
+<style>
+    .fade-in {
+        animation: fadeIn 0.4s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<!-- Modal Crear y editar Parametro Evaluacion -->
+<div class="modal fade" id="addParametroModal" tabindex="-1" aria-labelledby="addParametroModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-4 animate__animated animate__fadeIn">
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title" id="parametroEvaluacionModalLabel">{{ titulo }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body bg-light">
+                <form id="parametroForm" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" id="parametroId" name="id">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="parametroNombre">Nombre Parametro</label>
+                        <input type="text" class="form-control form-control-lg shadow-sm" id="parametroNombre"
+                            name="nombre" required maxlength="100" placeholder="Ingrese el nombre del parámetro">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="parametroDescripcion">Encuesta</label>
+                        <textarea class="form-control shadow-sm" id="parametroDescripcion" name="descripcion" rows="2"
+                            placeholder="Breve descripción..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Pesos y Estados</label>
+                        <div id="pesosEstadosContainer" class="border rounded-3 p-3 bg-white"
+                            style="max-height: 220px; overflow-y: auto;">
+                            <!-- Filas dinámicas aquí -->
+                        </div>
+                        <div class="d-flex justify-content-center my-3">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="addPesoEstadoBtn"
+                                title="Agregar fila">
+                                <i class="bi bi-plus-circle me-1"></i> Agregar
+                            </button>
+                        </div>
+                        <div class="form-text text-muted">Agregue pares de peso y estado. Puede eliminar filas si es
+                            necesario.</div>
+                    </div>
+
+                    <div id="formErrorParametro" class="text-danger small d-none"></div>
+
+                    <div class="modal-footer bg-white rounded-bottom-4">
+                        <button type="button" class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

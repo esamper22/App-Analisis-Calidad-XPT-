@@ -1,0 +1,857 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block adminD %}
+
+
+<!-- Contenido principal -->
+<div class="container-fluid py-4">
+    <!-- Secciones de contenido -->
+    <!-- 1. Dashboard -->
+    <div class="content-section active" id="page-1">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-speedometer2 me-2"></i>Dashboard</h2>
+                    <p class="text-muted">Resumen general del sistema</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-card-body">
+                        <div class="stat-card-icon bg-primary">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <div class="stat-card-title">Usuarios</div>
+                            <div class="stat-card-value">1,254</div>
+                            <div class="stat-card-change positive">
+                                <i class="bi bi-arrow-up"></i> 12.5%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-card-body">
+                        <div class="stat-card-icon bg-success">
+                            <i class="bi bi-app"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <div class="stat-card-title">Aplicaciones</div>
+                            <div class="stat-card-value">45</div>
+                            <div class="stat-card-change positive">
+                                <i class="bi bi-arrow-up"></i> 8.3%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-card-body">
+                        <div class="stat-card-icon bg-warning">
+                            <i class="bi bi-star"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <div class="stat-card-title">Evaluaciones</div>
+                            <div class="stat-card-value">876</div>
+                            <div class="stat-card-change positive">
+                                <i class="bi bi-arrow-up"></i> 5.2%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-card-body">
+                        <div class="stat-card-icon bg-danger">
+                            <i class="bi bi-activity"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <div class="stat-card-title">Actividad</div>
+                            <div class="stat-card-value">92%</div>
+                            <div class="stat-card-change negative">
+                                <i class="bi bi-arrow-down"></i> 2.1%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficas -->
+        <div class="row mb-4">
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Actividad de Usuarios</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="userActivityChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Distribución de Aplicaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="appDistributionChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actividad reciente -->
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Actividad Reciente</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Ver todo</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="d-flex">
+                                    <div class="activity-icon bg-primary">
+                                        <i class="bi bi-person-plus"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Nuevo usuario registrado</div>
+                                        <div class="text-muted small">Juan Pérez se unió al sistema</div>
+                                        <div class="text-muted small">Hace 2 horas</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex">
+                                    <div class="activity-icon bg-success">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Evaluación completada</div>
+                                        <div class="text-muted small">App "GestorPro" evaluada</div>
+                                        <div class="text-muted small">Hace 5 horas</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex">
+                                    <div class="activity-icon bg-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Aplicación actualizada</div>
+                                        <div class="text-muted small">Se actualizó "FinanzApp" a v2.1</div>
+                                        <div class="text-muted small">Hace 1 día</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex">
+                                    <div class="activity-icon bg-info">
+                                        <i class="bi bi-chat-dots"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold">Nuevo comentario</div>
+                                        <div class="text-muted small">María comentó en "DataViz"</div>
+                                        <div class="text-muted small">Hace 2 días</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Aplicaciones Mejor Valoradas</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Ver todas</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="app-icon bg-primary">
+                                            <i class="bi bi-graph-up"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">DataViz Pro</div>
+                                            <div class="text-muted small">Visualización de datos</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-rating">
+                                        <span class="badge bg-success">4.9</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="app-icon bg-info">
+                                            <i class="bi bi-wallet2"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">FinanzApp</div>
+                                            <div class="text-muted small">Gestión financiera</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-rating">
+                                        <span class="badge bg-success">4.8</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="app-icon bg-warning">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">TaskMaster</div>
+                                            <div class="text-muted small">Gestión de tareas</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-rating">
+                                        <span class="badge bg-success">4.7</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="app-icon bg-danger">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <div class="fw-bold">SecurePass</div>
+                                            <div class="text-muted small">Gestor de contraseñas</div>
+                                        </div>
+                                    </div>
+                                    <div class="app-rating">
+                                        <span class="badge bg-success">4.6</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Gestión de Encuestas -->
+    <div class="content-section" id="page-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-card-list me-2"></i>Gestión de Encuestas</h2>
+                    <p class="text-muted">Administra las encuestas de satisfacción del método Delphi y los tipos de
+                        aplicación</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Card: Encuestas -->
+            <!-- <div class="col-lg-8 col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Encuestas</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEncuestaModal">
+                            <i class="bi bi-plus-lg me-1"></i> Nueva Encuesta
+                        </button>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-hover mb-0" id="encuestasTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" style="width: 5%;">#</th>
+                                        <th scope="col">Pregunta</th>
+                                        <th scope="col" style="width: 20%;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="encuestasBody">
+                                    {% if encuestas %}
+                                    {% for encuesta in encuestas %}
+                                    <tr data-encuesta-id="{{ encuesta.id }}">
+                                        <th scope="row">{{ loop.index }}</th>
+                                        <td class="pregunta-text">{{ encuesta.pregunta }}</td>
+                                        <td>
+                                            <button type="button"
+                                                class="btn btn-outline-primary btn-sm rounded-circle shadow-sm me-2 btn-editar"
+                                                style="width: 32px; height: 32px;" title="Editar"
+                                                data-id="{{ encuesta.id }}" data-pregunta="{{ encuesta.pregunta | e }}"
+                                                data-bs-toggle="modal" data-bs-target="#addEncuestaModal">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-outline-danger btn-sm rounded-circle shadow-sm btn-eliminar"
+                                                style="width: 32px; height: 32px;" title="Eliminar"
+                                                data-id="{{ encuesta.id }}">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No hay encuestas registradas.</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white">
+                        <nav aria-label="Paginación de encuestas">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Card: Parametro Evaluacion -->
+            <div class="col-lg-8 col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Parámetros de Evaluación</h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <form class="d-flex" id="searchParametroForm">
+                                <input type="text" class="form-control form-control-sm me-2" id="searchParametroInput"
+                                    placeholder="Buscar parámetro..." aria-label="Buscar parámetro">
+                                <button class="btn btn-outline-secondary btn-sm" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </form>
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#addParametroModal" id="addParametroBtn" >
+                                <i class="bi bi-plus-lg me-1"></i> Añadir Encuesta
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm d-flex align-items-center" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#parametrosCollapse" aria-expanded="true"
+                                aria-controls="parametrosCollapse" title="Mostrar/Ocultar">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <!-- Buscador -->
+                        </div>
+                    </div>
+                    <div class="collapse show" id="parametrosCollapse">
+                        <div class="card-body p-0">
+                            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                <table class="table table-hover align-middle mb-0" id="parametrosTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col" style="width: 6%;">#</th>
+                                            <th scope="col">Parametro</th>
+                                            <th scope="col">Encuesta</th>
+                                            <th scope="col" style="width: 18%;">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="parametrosBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <nav aria-label="Paginación de parámetros">
+                                <ul class="pagination pagination-sm justify-content-center mb-0"
+                                    id="parametrosPagination">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Siguiente</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Nomenclador Tipo de Aplicación -->
+            <div class="col-lg-4 col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Tipos de Aplicación</h5>
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addTipoModal">
+                            <i class="bi bi-plus-lg me-1"></i> Añadir Tipo
+                        </button>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="px-3 py-2">
+                            <input type="text" id="searchTipoInput" class="form-control form-control-sm"
+                                placeholder="Filtrar tipo..." aria-label="Filtrar tipo">
+                        </div>
+                        <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
+                            <table class="table table-sm table-hover mb-0" id="tiposTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" style="width: 10%;">#</th>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col" style="width: 30%;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tiposBody">
+                                    <!-- Rellena automaticamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white">
+                        <nav aria-label="Paginación de tipos">
+                            <ul class="pagination pagination-sm justify-content-center mb-0" id="tiposPagination">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Aplicaciones -->
+    <div class="content-section" id="page-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-app me-2"></i>Aplicaciones</h2>
+                    <p class="text-muted">Gestiona las aplicaciones a evaluar</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Aplicaciones</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAppModal">
+                            <i class="bi bi-plus-circle me-1"></i> Nueva Aplicación
+                        </button>
+                    </div>
+                    <!-- Buscador de aplicaciones -->
+                    <div class="card-header bg-white">
+                        <form class="d-flex" id="searchAppForm">
+                            <input type="text" class="form-control me-2" id="searchAppInput"
+                                placeholder="Buscar aplicación..." aria-label="Buscar aplicación">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="appsGrid">
+                            <!-- Este contenido inicial será reemplazado por JS -->
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <nav aria-label="Paginación de aplicaciones">
+                            <ul class="pagination justify-content-center mb-0" id="appsPagination">
+                                <!-- Se completará dinámicamente si hay paginación -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Evaluacion -->
+    <div class="content-section" id="page-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-star me-2"></i>Evaluación de Aplicaciones</h2>
+                    <p class="text-muted ">Proceso de evaluación de aplicaciones</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Evaluaciones Pendientes</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAppModal">
+                            <i class="bi bi-plus-circle me-1"></i> Nueva Evaluación
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-hover mb-0" id="evaluationsTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Aplicación</th>
+                                        <th scope="col">Estado</th>
+                                        <th scope="col">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="evaluationsBody">
+                                    {% if evaluations %}
+                                    {% for evaluation in evaluations %}
+                                    <tr data-evaluation-id="{{ evaluation.id }}">
+                                        <th scope="row">{{ loop.index }}</th>
+                                        <td class="app-name">{{ evaluation.app_name }}</td>
+                                        <td class="app-status">
+                                            {% if evaluation.status == 'pendiente' %}
+                                            <span class="badge bg-warning">Pendiente</span>
+                                            {% elif evaluation.status == 'en progreso' %}
+                                            <span class="badge bg-info">En Progreso</span>
+                                            {% elif evaluation.status == 'completada' %}
+                                            <span class="badge bg-success">Completada</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">Desconocido</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                class="btn btn-outline-primary btn-sm rounded-circle shadow-sm me-2 btn-view"
+                                                style="width: 32px; height: 32px;" title="Ver Detalles"
+                                                data-id="{{ evaluation.id }}"
+                                                data-app-name="{{ evaluation.app_name | e }}">
+                                                <i class="bi bi-eye-fill"></i>
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-outline-success btn-sm rounded-circle shadow-sm me-2 btn-edit"
+                                                style="width: 32px; height: 32px;" title="Editar Evaluación"
+                                                data-id="{{ evaluation.id }}"
+                                                data-app-name="{{ evaluation.app_name | e }}">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            <button type="button"
+                                                class="btn btn-outline-danger btn-sm rounded-circle shadow-sm btn-delete"
+                                                style="width: 32px; height: 32px;" title="Eliminar Evaluación"
+                                                data-id="{{ evaluation.id }}">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">No hay evaluaciones pendientes.</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <nav aria-label="Paginación de evaluaciones">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Siguiente</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Estadísticas -->
+    <div class="content-section" id="page-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-graph-up me-2"></i>Estadísticas</h2>
+                    <p class="text-muted">Análisis y métricas del sistema</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notificaciones según rol -->
+        <div class="row mb-4">
+            <div class="col-12">
+                {% if current_user.rol.value == 'admin' %}
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-people-fill me-2"></i>
+                    <strong>Gestión de Usuarios:</strong> Tienes acceso completo para administrar usuarios.
+                </div>
+                {% elif current_user.rol.value == 'jefe departamento' %}
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-app-indicator me-2"></i>
+                    <strong>Notificación de Aplicaciones:</strong> Revisa las nuevas aplicaciones asignadas a tu
+                    departamento.
+                </div>
+                {% elif current_user.rol.value == 'evaluador' %}
+                <div class="alert alert-secondary" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Bienvenido evaluador, revisa tus evaluaciones pendientes.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Estadísticas principales -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Evaluaciones por Mes</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="evaluationsChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            {% if current_user.rol.value =='admin' %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Distribución de Usuarios</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="userDistributionChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Categorías de Aplicaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="appCategoriesChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Tendencia de Evaluaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="evaluationTrendChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Resumen de Métricas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Métrica</th>
+                                        <th scope="col">Último Mes</th>
+                                        <th scope="col">Este Mes</th>
+                                        <th scope="col">Variación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Usuarios Nuevos</td>
+                                        <td>124</td>
+                                        <td>156</td>
+                                        <td class="text-success">+25.8%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aplicaciones Evaluadas</td>
+                                        <td>45</td>
+                                        <td>52</td>
+                                        <td class="text-success">+15.6%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tiempo Promedio de Evaluación</td>
+                                        <td>3.2 días</td>
+                                        <td>2.8 días</td>
+                                        <td class="text-success">-12.5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Calificación Promedio</td>
+                                        <td>4.2</td>
+                                        <td>4.5</td>
+                                        <td class="text-success">+7.1%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Usuarios Activos</td>
+                                        <td>876</td>
+                                        <td>923</td>
+                                        <td class="text-success">+5.4%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Configuracion -->
+    <div class="content-section" id="page-6">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2><i class="bi bi-gear me-2"></i>Configuración</h2>
+                    <p class="text-muted">Administra la configuración de tu cuenta</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Perfil de Usuario -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Perfil de Usuario</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="profile-avatar mx-auto">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <h5 class="mt-3 mb-0">{{ current_user.nombre_usuario }}</h5>
+                            <p class="text-muted">
+                                {% if current_user.rol.value == 'admin' %}
+                                Administrador
+                                {% elif current_user.rol.value == 'jefe departamento' %}
+                                Jefe Departamento
+                                {% elif current_user.rol.value == 'evaluador' %}
+                                Evaluador
+                                {% else %}
+                                {{ current_user.rol.value|capitalize }}
+                                {% endif %}
+                            </p>
+                            <button class="btn btn-sm btn-outline-primary">Cambiar foto</button>
+                        </div>
+                        <form>
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Nombre completo</label>
+                                <input type="text" class="form-control" id="fullName"
+                                    value="{{ current_user.nombre_completo }}" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" id="email" value="{{ current_user.correo }}"
+                                    readonly>
+                            </div>
+                            {% if current_user.rol.value != 'evaluador' %}
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="phone"
+                                    value="{{ current_user.telefono or '' }}">
+                            </div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seguridad -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Seguridad</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label">Contraseña actual</label>
+                                <input type="password" class="form-control" id="currentPassword">
+                            </div>
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">Nueva contraseña</label>
+                                <input type="password" class="form-control" id="newPassword">
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
+                                <input type="password" class="form-control" id="confirmPassword">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Preferencias visibles solo para admin y jefe departamento -->
+                {% if current_user.rol.value in ['admin', 'jefe departamento'] %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Preferencias</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label d-block">Notificaciones</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                <label class="form-check-label" for="emailNotifications">Notificaciones por
+                                    email</label>
+                            </div>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                                <label class="form-check-label" for="pushNotifications">Notificaciones
+                                    push</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar preferencias</button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% include 'components/modals/add_app.html' %}
+{% include 'components/modals/tipo_app.html' %}
+{% include 'components/modals/parametro_evaluacion.html' %}
+
+{% endblock %}

@@ -7,7 +7,59 @@ from app.models.usuario import  *
 from app.models.encuesta import  *
 
 def crear_contexto(app):
+    def params_por_defecto():
+        '''
+        Crea los parametros por defecto para las encuestas de evaluacion de aplicaciones.
+        '''
+        from app.models.evaluacion import ParametroEvaluacion
+        if not ParametroEvaluacion.query.filter_by(nombre='Usabilidad').first():
+            usabilidad = ParametroEvaluacion(nombre='Usabilidad', descripcion='Evaluación de la usabilidad de la aplicación')
+            usabilidad.guardar()
+        if not ParametroEvaluacion.query.filter_by(nombre='Seguridad').first():
+            seguridad = ParametroEvaluacion(nombre='Seguridad', descripcion='Evaluación de la seguridad de la aplicación')
+            seguridad.guardar()
+        if not ParametroEvaluacion.query.filter_by(nombre='Rendimiento').first():
+            rendimiento = ParametroEvaluacion(nombre='Rendimiento', descripcion='Evaluación del rendimiento de la aplicación')
+            rendimiento.guardar()
+        if not ParametroEvaluacion.query.filter_by(nombre='Funcionalidad').first():
+            funcionalidad = ParametroEvaluacion(nombre='Funcionalidad', descripcion='Evaluación de la funcionalidad de la aplicación')
+            funcionalidad.guardar()
+        if not ParametroEvaluacion.query.filter_by(nombre='Mantenibilidad').first():
+            mantenibilidad = ParametroEvaluacion(nombre='Mantenibilidad', descripcion='Evaluación de la mantenibilidad de la aplicación')
+            mantenibilidad.guardar()
+        if not ParametroEvaluacion.query.filter_by(nombre='Portabilidad').first():
+            portabilidad = ParametroEvaluacion(nombre='Portabilidad', descripcion='Evaluación de la portabilidad de la aplicación')
+            portabilidad.guardar()
+        if not ParametroEvaluacion.query.filter_by(nombre='Escalabilidad').first():
+            escalabilidad = ParametroEvaluacion(nombre='Escalabilidad', descripcion='Evaluación de la escalabilidad de la aplicación')
+            escalabilidad.guardar()
+        if not ParametroEvaluacion.query.filter_by(nombre='Confiabilidad').first():
+            confiabilidad = ParametroEvaluacion(nombre='Confiabilidad', descripcion='Evaluación de la confiabilidad de la aplicación')
+            confiabilidad.guardar()
+        if not ParametroEvaluacion.query.filter_by(nombre='Disponibilidad').first():
+            disponibilidad = ParametroEvaluacion(nombre='Disponibilidad', descripcion='Evaluación de la disponibilidad de la aplicación')
+            disponibilidad.guardar()
+    
+    def crear_tipos_applicacion():
+        '''
+        Crea los tipos de aplicación por defecto.
+        '''
+        from app.models.aplicacion import TipoAplicacion
+        tipos = [
+            'Web', 'Móvil', 'Escritorio', 'Híbrida', 'API', 'Microservicio',
+            'Servidor', 'Cliente', 'IoT', 'Blockchain', 'Inteligencia Artificial',
+            'Realidad Aumentada', 'Realidad Virtual', 'Juego', 'Educativa',
+            'Financiera', 'E-commerce', 'Social', 'Salud', 'Productividad',
+        ]
+        
+        for tipo in tipos:
+            if not TipoAplicacion.query.filter_by(nombre=tipo).first():
+                nuevo_tipo = TipoAplicacion(nombre=tipo, descripcion=f'Tipo de aplicación {tipo}')
+                nuevo_tipo.guardar()     
     
     with app.app_context():
         from ..extension import db
         db.create_all()
+        
+        params_por_defecto()
+        crear_tipos_applicacion()

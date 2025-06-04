@@ -1,51 +1,80 @@
-<!-- Modal Añadir Aplicación -->
+<style>
+    /* Transición y efecto hover para los iconos */
+    .icon-item {
+        transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .icon-item:hover {
+        transform: scale(1.1);
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+</style>
+
+<!-- Modal Añadir/Editar Aplicación -->
 <div class="modal fade" id="addAppModal" tabindex="-1" aria-labelledby="addAppModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addAppModalLabel">Añadir Nueva Aplicación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form class="form-add-app" novalidate>
+                     <!-- 1) Aquí va el campo CSRF token: -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <input type="hidden" id="appId" name="id">
+
                     <div class="mb-3">
-                        <label for="appName" class="form-label">Nombre de la aplicación</label>
-                        <input type="text" class="form-control" id="appName" required>
+                        <label class="form-label" for="appName">Nombre de la aplicación</label>
+                        <input type="text" class="form-control" id="appName" name="nombre" required>
                     </div>
+
                     <div class="mb-3">
-                        <label for="appDescription" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="appDescription" rows="3" required></textarea>
+                        <label class="form-label" for="appDescription">Descripción</label>
+                        <textarea class="form-control" id="appDescription" name="descripcion" rows="3"
+                            required></textarea>
                     </div>
+
                     <div class="mb-3">
-                        <label for="appCategory" class="form-label">Categoría</label>
-                        <select class="form-select" id="appCategory" required>
-                            <option value="">Seleccionar categoría</option>
-                            <option value="analytics">Análisis</option>
-                            <option value="finance">Finanzas</option>
-                            <option value="productivity">Productividad</option>
-                            <option value="security">Seguridad</option>
-                            <option value="other">Otra</option>
+                        <label class="form-label" for="appCategory">Tipo de aplicación</label>
+                        <select class="form-select" id="appCategory" name="tipo_aplicacion_id" required>
+                            <option value="">Seleccionar tipo</option>
+                            {% for tipo in tipos_aplicacion %}
+                            <option value="{{ tipo.id }}">{{ tipo.nombre }}</option>
+                            {% endfor %}
                         </select>
                     </div>
+
                     <div class="mb-3">
-                        <label for="appVersion" class="form-label">Versión</label>
-                        <input type="text" class="form-control" id="appVersion" required>
+                        <label class="form-label" for="appVersion">Versión</label>
+                        <input type="text" class="form-control" id="appVersion" name="version">
                     </div>
+
+                    <!-- Selector visual de íconos -->
                     <div class="mb-3">
-                        <label for="appIcon" class="form-label">Icono</label>
-                        <select class="form-select" id="appIcon" required>
-                            <option value="graph-up">Gráfico</option>
-                            <option value="wallet2">Billetera</option>
-                            <option value="calendar-check">Calendario</option>
-                            <option value="shield-check">Seguridad</option>
-                            <option value="chat-dots">Chat</option>
-                        </select>
+                        <label class="form-label">Buscar y seleccionar ícono</label>
+                        <input type="text" id="iconSearch" class="form-control mb-2" placeholder="Buscar ícono...">
+                        <input type="hidden" name="icono" id="selectedIcon">
+                        <div id="selectedIconName" class="mb-2 fst-italic text-muted"></div>
+                        <div id="iconGrid" class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+                            {% for icon in iconos_bootstrap %}
+                            <div class="icon-item text-center p-2 border rounded m-1" data-icon="{{ icon }}"
+                                style="display: none; width: 60px; cursor: pointer; transition: background-color 0.2s, transform 0.2s;">
+                                <i class="bi {{ icon }} fs-3"></i>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                    <div id="formError" class="text-danger small mt-2 d-none"></div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>
