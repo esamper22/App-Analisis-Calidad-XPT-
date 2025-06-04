@@ -91,3 +91,55 @@ class Usuario(UserMixin, db.Model):
     @staticmethod
     def obtener_por_rol(rol: Rol) -> list:
         return Usuario.query.filter_by(rol=rol).all()
+    
+
+# ------------------------
+# Modelo Notificacion de evaluacion
+# ------------------------
+class NotificacionEvaluacion(db.Model):
+    __tablename__ = 'notificaciones_evaluacion'
+
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    mensaje = db.Column(db.String(255), nullable=False)
+    fecha_creacion = db.Column(db.DateTime, default=db.func.now)
+    id_evaluacion = db.Column(db.Integer, db.ForeignKey('evaluaciones.id'), nullable=True)
+    
+    evaluacion = db.relationship('Evaluacion', backref='notificaciones', lazy=True)
+    usuario = db.relationship('Usuario', backref='notificaciones', lazy=True)
+
+    def __repr__(self):
+        return f"<Notificacion #{self.id} para Usuario #{self.usuario_id}>"
+    
+    def guardar(self):
+        db.session.add(self)
+        db.session.commit()
+        
+    @staticmethod
+    def obtener_por_usuario(usuario_id: int) -> list:
+        return NotificacionEvaluacion.query.filter_by(usuario_id=usuario_id).all()
+    
+    @staticmethod
+    def obtener_todas() -> list:
+        return NotificacionEvaluacion.query.all()
+    
+    @staticmethod
+    def obtener_por_id(notificacion_id: int) -> 'NotificacionEvaluacion':
+        return NotificacionEvaluacion.query.get(notificacion_id)
+    
+    @staticmethod
+    def eliminar_por_id(notificacion_id: int):
+        notificacion = NotificacionEvaluacion.obtener_por_id(notificacion_id)
+        if notificacion:
+            db.session.delete(notificacion)
+            db.session.commit()
+            return True
+        return False
+    
+    def to_dict(self) -> dict:
+        return {
+            'id': self.id,
+            'usuario_id': self.usuario_id,
+            'mensaje': self.mensaje,
+            'fecha_creacion': self.fecha_creacion.isoformat()
+        }

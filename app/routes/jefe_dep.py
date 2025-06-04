@@ -597,7 +597,7 @@ def crear_evaluacion():
     Espera un JSON con:
       - app_id: int
       - parametros: [int, int, ...]     (lista de IDs de Encuesta)
-      - evaluadores: [int, int, ...]    (lista de IDs de Usuario)
+      - usuarios: [int, int, ...]    (lista de IDs de Usuario)
       - fecha_inicio: "YYYY-MM-DD"
       - fecha_fin:    "YYYY-MM-DD"
       - rondas: int (opcional, por defecto 1)
@@ -606,14 +606,18 @@ def crear_evaluacion():
     """
     data = request.get_json() or {}
 
-    app_id = data.get('app_id')
+    app_id = data.get('aplicacion_id')
     lista_parametros = data.get('parametros', [])
-    lista_evaluadores = data.get('evaluadores', [])
+    lista_evaluadores = data.get('usuarios', [])
     fecha_inicio = data.get('fecha_inicio')
     fecha_fin = data.get('fecha_fin')
     rondas = data.get('rondas', 1)
     comentarios = data.get('comentarios', '')
-
+    
+    # Depuracion
+    print("Insertando Evaluacion")
+    print(f"app_id: {app_id}, lista_parametros: {lista_parametros}, lista_evaluadores: {lista_evaluadores}, fecha_inicio: {fecha_inicio}, fecha_fin: {fecha_fin}, rondas: {rondas}, comentarios: {comentarios}")
+    
     # Validaciones básicas
     if not app_id or not lista_parametros or not lista_evaluadores or not fecha_inicio or not fecha_fin:
         return jsonify(error='Faltan campos obligatorios.'), 400
@@ -632,7 +636,7 @@ def crear_evaluacion():
     usuarios_objs = Usuario.query.filter(Usuario.id.in_(lista_evaluadores)).all()
     if len(usuarios_objs) != len(lista_evaluadores):
         return jsonify(error='Algún evaluador no existe.'), 404
-
+    
     # Parsear fechas
     try:
         fi = datetime.datetime.fromisoformat(fecha_inicio)
@@ -697,9 +701,9 @@ def editar_evaluacion(eval_id):
         return jsonify(error='Evaluación no encontrada.'), 404
 
     data = request.get_json() or {}
-    app_id = data.get('app_id')
+    app_id = data.get('aplicacion_id')
     lista_parametros = data.get('parametros', [])
-    lista_evaluadores = data.get('evaluadores', [])
+    lista_evaluadores = data.get('usuarios', [])
     fecha_inicio = data.get('fecha_inicio')
     fecha_fin = data.get('fecha_fin')
     rondas = data.get('rondas', eval_obj.rondas)
@@ -792,6 +796,40 @@ def eliminar_evaluacion(eval_id):
     except Exception as ex:
         db.session.rollback()
         return jsonify(error='Error al eliminar la evaluación.', details=str(ex)), 500
+
+
+@jefe_dep_bp.route('/evaluacion/<int:evaluacion_id>/enviar', methods=['POST'])
+@login_required
+@jefe_required
+def enviar_evaluacion(evaluacion_id):
+    """
+    Marca la evaluación como 'enviado' y notifica a todos los evaluadores relacionados.
+    Devuelve JSON con el estado actualizado y la lista de evaluaciones.
+    """
+    evaluacion = Evaluacion.obtener_por_id(evaluacion_id)
+    if not evaluacion:
+        return jsonify({'error': 'Evaluación no encontrada.'}), 404
+
+    try:
+        # Cambiar estado de la evaluación a "enviado"
+        evaluacion.estado = 'enviado'
+        db.session.commit()
+
+        # (Opcional) Aquí podrías iterar sobre evaluacion.usuarios para enviar notificaciones.
+        # for usuario in evaluacion.usuarios:
+        #     enviar_notificacion(usuario.email, evaluacion)
+
+        # Devolver lista actualizada de evaluaciones
+        todas = [e.to_dict() for e in Evaluacion.obtener_todos()]
+        return jsonify({
+            'message': 'Evaluación enviada a todos los evaluadores.',
+            'evaluaciones': todas
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'No se pudo enviar la evaluación: {str(e)}'}), 500
+
 
 
 
