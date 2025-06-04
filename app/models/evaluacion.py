@@ -138,6 +138,10 @@ class Evaluacion(db.Model):
         return Evaluacion.query.filter_by(aplicacion_id=aplicacion_id).all()
     
     @staticmethod
+    def obtener_por_aplicacion_y_estado(aplicacion_id, estado):
+        return Evaluacion.query.filter_by(aplicacion_id=aplicacion_id, estado=estado).all()
+    
+    @staticmethod
     def obtener_por_parametro(parametro_id):
         return Evaluacion.query.filter_by(parametro_id=parametro_id).all()
     
@@ -145,6 +149,12 @@ class Evaluacion(db.Model):
     def obtener_por_estado(estado):
         return Evaluacion.query.filter_by(estado=estado).all()
 
+    @staticmethod
+    def obtener_usuario_notificados(usuario_id):
+        """
+        Obtiene todas las evaluaciones en las que un usuario ha sido notificado.
+        """
+        return Evaluacion.query.join(EvaluacionUsuario).filter(EvaluacionUsuario.usuario_id == usuario_id).all()
 
 # ------------------------
 # Tabla intermedia Evaluación <-> Parámetro (n-a-n)

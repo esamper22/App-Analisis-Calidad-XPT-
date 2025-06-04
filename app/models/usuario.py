@@ -100,24 +100,32 @@ class NotificacionEvaluacion(db.Model):
     __tablename__ = 'notificaciones_evaluacion'
 
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    usuarios = db.Column(db.String(255), nullable=False)  # Lista de IDs de usuarios separados por comas
     mensaje = db.Column(db.String(255), nullable=False)
-    fecha_creacion = db.Column(db.DateTime, default=db.func.now)
+    fecha_creacion = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     id_evaluacion = db.Column(db.Integer, db.ForeignKey('evaluaciones.id'), nullable=True)
     
     evaluacion = db.relationship('Evaluacion', backref='notificaciones', lazy=True)
-    usuario = db.relationship('Usuario', backref='notificaciones', lazy=True)
 
     def __repr__(self):
-        return f"<Notificacion #{self.id} para Usuario #{self.usuario_id}>"
-    
+        return f"<Notificacion #{self.id} para Usuarios {self.usuarios}>"
+
     def guardar(self):
         db.session.add(self)
         db.session.commit()
         
     @staticmethod
-    def obtener_por_usuario(usuario_id: int) -> list:
-        return NotificacionEvaluacion.query.filter_by(usuario_id=usuario_id).all()
+    def enviar_notificaciones(usuarios: list, mensaje: str, id_evaluacion: int = None) -> 'NotificacionEvaluacion':
+        # Ensure usuarios is a list of user IDs, not Usuario objects
+        user_ids = [u.id if hasattr(u, 'id') else u for u in usuarios]
+        notificacion = NotificacionEvaluacion(
+            usuarios=','.join(map(str, user_ids)),
+            mensaje=mensaje,
+            id_evaluacion=id_evaluacion
+        )
+        notificacion.guardar()
+        return notificacion
+        
     
     @staticmethod
     def obtener_todas() -> list:
@@ -139,7 +147,17 @@ class NotificacionEvaluacion(db.Model):
     def to_dict(self) -> dict:
         return {
             'id': self.id,
-            'usuario_id': self.usuario_id,
+            'usuarios': self.usuarios.split(',') if self.usuarios else [],
             'mensaje': self.mensaje,
             'fecha_creacion': self.fecha_creacion.isoformat()
         }
+    
+    @staticmethod
+    def obtener_mensajes_por_usuario(usuario_id: int) -> list:
+        notificaciones = NotificacionEvaluacion.query.filter(NotificacionEvaluacion.usuarios.contains(str(usuario_id))).all()
+        return notificaciones
+
+    @staticmethod
+    def obtener_aplicaciones_por_usuario(usuario_id: int) -> list:
+        notificaciones = NotificacionEvaluacion.query.filter(NotificacionEvaluacion.usuarios.contains(str(usuario_id))).all()
+        return [n.id_evaluacion for n in notificaciones]

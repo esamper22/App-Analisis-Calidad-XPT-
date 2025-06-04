@@ -1,11 +1,11 @@
 import datetime
 from flask import Blueprint, render_template, request, jsonify
 from sqlalchemy.exc import SQLAlchemyError
-from app.models.evaluacion import Encuesta, EvaluacionParametro, EvaluacionUsuario, Evaluacion
+from app.models.evaluacion import Encuesta, Evaluacion
 from flask_login import login_required
 
 from app.extension import db
-from app.models.usuario import Usuario
+from app.models.usuario import Usuario, NotificacionEvaluacion
 from app.models.rol import Rol
 from app.forms.create_user import UsuarioForm
 from app.decorators.jefe_dep import jefe_required
@@ -814,6 +814,13 @@ def enviar_evaluacion(evaluacion_id):
         # Cambiar estado de la evaluación a "enviado"
         evaluacion.estado = 'enviado'
         db.session.commit()
+        
+        NotificacionEvaluacion.enviar_notificaciones(
+            usuarios=evaluacion.usuarios,
+            id_evaluacion=evaluacion.id,
+            mensaje=f'La evaluación "{evaluacion.aplicacion.nombre}" ha sido enviada.'
+        )
+        
 
         # (Opcional) Aquí podrías iterar sobre evaluacion.usuarios para enviar notificaciones.
         # for usuario in evaluacion.usuarios:
