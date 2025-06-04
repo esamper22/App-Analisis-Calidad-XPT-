@@ -2,11 +2,15 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, abort
 from flask_login import login_required, current_user
+
 from app.models.aplicacion import Aplicacion
 from app.models.resultado import ResultadoEvaluacion
-from app.models.evaluacion import Evaluacion, EvaluacionUsuario, EvaluacionParametro, Encuesta
-from app.models.usuario import Usuario, NotificacionEvaluacion
+from app.models.evaluacion import Evaluacion, EvaluacionUsuario, EvaluacionParametro
+from app.models.encuesta import Encuesta
+from app.models.usuario import Usuario
+from app.models.notificacion import NotificacionEvaluacion
 from app.extension import db
+
 from app.decorators.expert import expert_required
 import datetime
 

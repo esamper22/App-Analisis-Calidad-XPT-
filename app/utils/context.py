@@ -1,16 +1,19 @@
 # importa modelos todos los modelos obligatoriamente para cargar y crear el conexto
 from app.models.aplicacion import  *
+from app.models.encuesta import  *
 from app.models.evaluacion import  *
+from app.models.notificacion import  *
+from app.models.resultado import  *
 from app.models.ronda_evaluacion import  *
-from app.models.ronda_participantes import  *
 from app.models.usuario import  *
 
 def crear_contexto(app):
+    
     def params_por_defecto():
         '''
         Crea los parametros por defecto para las encuestas de evaluacion de aplicaciones.
         '''
-        from app.models.evaluacion import Encuesta
+        from app.models.encuesta import Encuesta
         if not Encuesta.query.filter_by(nombre='Usabilidad').first():
             usabilidad = Encuesta(nombre='Usabilidad', descripcion='Evaluación de la usabilidad de la aplicación')
             usabilidad.guardar()

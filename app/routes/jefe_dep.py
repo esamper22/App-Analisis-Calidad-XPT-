@@ -1,17 +1,20 @@
-import datetime
 from flask import Blueprint, render_template, request, jsonify
-from sqlalchemy.exc import SQLAlchemyError
-from app.models.evaluacion import Encuesta, Evaluacion
 from flask_login import login_required
 
-from app.extension import db
-from app.models.usuario import Usuario, NotificacionEvaluacion
+import datetime
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.models.encuesta import Encuesta
+from app.models.evaluacion import Evaluacion
+from app.models.usuario import Usuario
+from app.models.notificacion import NotificacionEvaluacion
 from app.models.rol import Rol
-from app.forms.create_user import UsuarioForm
-from app.decorators.jefe_dep import jefe_required
 from app.models.aplicacion import Aplicacion, TipoAplicacion
+
+from app.decorators.jefe_dep import jefe_required
+from app.extension import db
+from app.forms.create_user import UsuarioForm
 from app.utils.iconos import obtener_iconos_bootstrap
-from app.models.evaluacion import Encuesta, Evaluacion
 
 jefe_dep_bp = Blueprint('jefe_dep', __name__, url_prefix='/jefe_dep')
 

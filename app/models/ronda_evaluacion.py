@@ -17,11 +17,5 @@ class RondaEvaluacion(db.Model):
     # Una ronda puede tener múltiples resultados
     resultados = db.relationship('ResultadoEvaluacion', backref='ronda', lazy=True)
 
-    participantes = db.relationship(
-        'ParticipanteRonda',
-        back_populates='ronda',
-        lazy='dynamic'
-    )
-    
     def __repr__(self):
         return f'<Ronda {self.numero} - Aplicacion {self.aplicacion_id}>'

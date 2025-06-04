@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 import re
 from flask import current_app
 from app.forms.create_user import UsuarioForm, UsuarioEditForm
-from app.models.evaluacion import Encuesta
+from app.models.encuesta import Encuesta
 from app.decorators.admin import admin_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
